@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const verify = require("./verifyToken");
 const Influx = require("influx");
 
 const influx = new Influx.InfluxDB({
