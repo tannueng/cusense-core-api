@@ -1,9 +1,8 @@
 const express = require("express");
 const app = express();
 
-
 //Import Routes
-const authRoute = require("./routes/query");
+const queryRoute = require("./routes/query");
 
 app.get("/", (req, res) => {
   console.log("Responding to root route");
