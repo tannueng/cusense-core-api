@@ -11,7 +11,7 @@ const influx = new Influx.InfluxDB({
   port: 8086
 });
 
-router.get("/all", verifyToken, (req, res) => {
+router.get("/all", verify, (req, res) => {
   influx
     .query("select * from cpu")
     .then(results => {
