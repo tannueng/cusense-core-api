@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Influx = require("influx");
+const verify = require("./verifyToken");
 
 const influx = new Influx.InfluxDB({
   //Should put in .env
@@ -10,7 +11,7 @@ const influx = new Influx.InfluxDB({
   port: 8086
 });
 
-router.get("/all", (req, res) => {
+router.get("/all", verifyToken, (req, res) => {
   influx
     .query("select * from cpu")
     .then(results => {
