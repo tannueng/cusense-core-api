@@ -57,13 +57,15 @@ router.get("/active", (req, res) => {
     console.log("Station data received from SQL");
     // rows[0].stationid
     influx
-      .query(
-        "select mean(*) from ss2 where time > now() - 24h group by sensorid"
-      )
+      .query("select mean(*) from ss2 group by sensorid")
       .then(results => {
+        console.log("before loop");
         for (i = 0; i < rows.length; i++) {
+          console.log(rows[i].stationid);
           for (j = 0; j < results.length; i++) {
-            if (rows[i].stationid == results[j].stationid) {
+            console.log(results[j].stationid);
+            if (rows[i].stationid.localeCompare(results[j].stationid)) {
+              console.log("in loop matches");
               row[i].info = results[j];
               final_result += rows[i];
               console.log("final_result", final_result);
