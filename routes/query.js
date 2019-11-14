@@ -70,10 +70,11 @@ router.get("/active", (req, res) => {
               rows[i].info = results[j];
               final_result += rows[i];
               console.log("final_result", final_result);
-              res.json(final_result);
+              
             }
           }
         }
+        res.json(final_result);
       })
       .catch(console.error);
 
