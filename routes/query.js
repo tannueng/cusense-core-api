@@ -64,9 +64,9 @@ router.get("/active", (req, res) => {
           console.log(rows[i].stationid);
           for (j = 0; j < results.length; i++) {
             console.log(results[j].stationid);
-            if (rows[i].stationid.localeCompare(results[j].stationid)) {
+            if (rows[i].stationid == results[j].stationid) {
               console.log("in loop matches");
-              row[i].info = results[j];
+              rows[i].info = results[j];
               final_result += rows[i];
               console.log("final_result", final_result);
             }
