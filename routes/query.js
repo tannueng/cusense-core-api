@@ -59,10 +59,11 @@ router.get("/active", (req, res) => {
     influx
       .query("select mean(*) from ss2 group by sensorid")
       .then(results => {
+        console.log(results);
         console.log("before loop");
         for (i = 0; i < rows.length; i++) {
           console.log("rows[i].stationid", rows[i].stationid);
-          for (j = 0; j < results.length; i++) {
+          for (j = 0; j < results.length; j++) {
             console.log("results[j].sensorid", results[j].sensorid);
             if (rows[i].stationid == results[j].sensorid) {
               console.log("in loop matches");
