@@ -39,4 +39,14 @@ router.get("/last-day", (req, res) => {
     .catch(console.error);
 });
 
+router.get("/station", (req, res) => {
+  con.query("SELECT * FROM station WHERE publish = 1", (err, rows) => {
+    if (err) throw err;
+
+    console.log("Station data received from SQL");
+    // rows[0].stationid
+    res.json(rows[0].stationid);
+  });
+});
+
 module.exports = router;
