@@ -53,7 +53,7 @@ router.get("/station", (req, res) => {
 router.get("/active", (req, res) => {
   con.query("SELECT * FROM station WHERE publish = 1", (err, rows) => {
     if (err) throw err;
-    const final_result = {};
+    let final_result = {};
     console.log("Station data received from SQL");
     // rows[0].stationid
     influx
@@ -70,15 +70,12 @@ router.get("/active", (req, res) => {
               rows[i].info = results[j];
               final_result += rows[i];
               console.log("final_result", final_result);
-              
             }
           }
         }
         res.json(final_result);
       })
       .catch(console.error);
-
-    
   });
 });
 
