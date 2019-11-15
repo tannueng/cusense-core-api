@@ -64,7 +64,7 @@ router.get("/active", (req, res) => {
             if (rows[i].stationid == results[j].sensorid) {
               console.log("in loop matches");
               // rows[i].info = results[j];
-              final_result[rows[i].id] = result[j];
+              final_result[rows[i].id] = results[j];
               final_result[rows[i].id].info = rows[i];
               console.log("final_result", final_result);
             }
