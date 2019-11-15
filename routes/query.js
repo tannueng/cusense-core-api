@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Influx = require("influx");
 const verify = require("./verifyToken");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -15,19 +15,14 @@ const influx = new Influx.InfluxDB({
   port: 8086
 });
 
-const con = mysql.createConnection({
+const pool = mysql.createPool({
   host: "localhost",
   user: process.env.SQL_USERNAME,
   password: process.env.SQL_PASSWORD,
-  database: process.env.SQL_DB
-});
-
-con.connect(err => {
-  if (err) {
-    console.log("Error connecting to mysql.");
-    return;
-  }
-  console.log("Connection to mysql established");
+  database: process.env.SQL_DB,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
 router.get("/last-day", (req, res) => {
@@ -40,35 +35,35 @@ router.get("/last-day", (req, res) => {
 });
 
 router.get("/station", (req, res) => {
-  con.query("SELECT * FROM station WHERE publish = 1", (err, rows) => {
-    if (err) throw err;
-
-    console.log("Station data received from SQL");
-    // rows[0].stationid
-
+  pool.query("SELECT * FROM station WHERE publish = 1", function(
+    err,
+    rows,
+    fields
+  ) {
+    // Connection is automatically released when query resolves
     res.json(rows);
   });
 });
 
 router.get("/active", (req, res) => {
-  con.query("SELECT * FROM station WHERE publish = 1", (err, rows) => {
-    if (err) throw err;
-    let final_result = {};
+  pool.query("SELECT * FROM station WHERE publish = 1", function(
+    err,
+    rows,
+    fields
+  ) {
+    // Connection is automatically released when query resolves
     console.log("Station data received from SQL");
-    // rows[0].stationid
     influx
       .query("select mean(*) from ss2 group by sensorid")
       .then(results => {
         console.log(results);
         console.log("before loop");
         for (i = 0; i < rows.length; i++) {
-          // console.log("rows[i].stationid", rows[i].stationid);
           for (j = 0; j < results.length; j++) {
-            // console.log("results[j].sensorid", results[j].sensorid);
             if (rows[i].stationid == results[j].sensorid) {
               console.log("in loop matches");
               // rows[i].info = results[j];
-              final_result += rows[i];
+              final_result[rows[i].stationid] = rows[i];
               console.log("final_result", final_result);
             }
           }
