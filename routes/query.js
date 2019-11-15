@@ -58,6 +58,7 @@ router.get("/active", (req, res) => {
       .then(results => {
         console.log(results);
         console.log("before loop");
+        let final_result = {}
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].stationid == results[j].sensorid) {
