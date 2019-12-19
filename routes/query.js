@@ -56,16 +56,16 @@ router.get("/active", (req, res) => {
     // Connection is automatically released when query resolves
     console.log("Station data received from SQL");
     influx
-      .query("select mean(*) from airdata group by sensorid")
+      .query("select mean(*) from airdata group by topic")
       .then(results => {
         console.log(results);
         console.log("before loop");
         let final_result = {};
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
-            console.log(rows[i].stationid, results[j].sensorid);
+            console.log(rows[i].topic, results[j].topic);
 
-            if (rows[i].stationid == results[j].sensorid) {
+            if (rows[i].topic == results[j].topic) {
               console.log("in loop matches");
               // rows[i].info = results[j];
               final_result[rows[i].id] = results[j];
