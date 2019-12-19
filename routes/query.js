@@ -27,7 +27,7 @@ const pool = mysql.createPool({
 
 router.get("/last-day", (req, res) => {
   influx
-    .query("select mean(*) from ss2 where time > now() - 24h group by sensorid")
+    .query("select mean(*) from airdata where time > now() - 24h group by sensorid")
     .then(results => {
       res.json(results);
     })
@@ -54,7 +54,7 @@ router.get("/active", (req, res) => {
     // Connection is automatically released when query resolves
     console.log("Station data received from SQL");
     influx
-      .query("select mean(*) from ss2 group by sensorid")
+      .query("select mean(*) from airdata group by sensorid")
       .then(results => {
         console.log(results);
         console.log("before loop");
@@ -84,7 +84,7 @@ router.get("/day/pm", (req, res) => {
       console.log("Station data received from SQL");
       influx
         .query(
-          "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from ss2 where time > now() - 24h group by sensorid"
+          "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by sensorid"
         )
         .then(results => {
           let final_result = {};
@@ -107,7 +107,7 @@ router.get("/day/pm", (req, res) => {
 
 router.get("/day2/pm", (req, res) => {
   matchQuery("SELECT stationid,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
-  "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from ss2 where time > now() - 24h group by sensorid")
+  "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by sensorid")
 });
 
 function matchQuery(mysqlQuery,influxQuery) {
