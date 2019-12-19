@@ -25,6 +25,9 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+defaultSQLquery =
+  "SELECT topic,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1";
+
 router.get("/last-day", (req, res) => {
   influx
     .query(
@@ -82,17 +85,26 @@ router.get("/active", (req, res) => {
   });
 });
 
-router.get("/day/pm", (req, res) => {
-  matchQuery(
-    "SELECT topic,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
-    "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by topic",
-    res
-  );
+router.get("/day/:type", (req, res) => {
+  const { type } = req.params;
+  if (type == "pm") {
+    matchQuery(
+      defaultSQLquery,
+      "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by topic",
+      res
+    );
+  } else if (type == "all") {
+    matchQuery(
+      defaultSQLquery,
+      "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 mean(temp) as mean, last(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 24h group by topic",
+      res
+    );
+  }
 });
 
 router.get("/realtime/all", (req, res) => {
   matchQuery(
-    "SELECT topic,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
+    defaultSQLquery,
     "select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m group by topic",
     res
   );
@@ -100,8 +112,6 @@ router.get("/realtime/all", (req, res) => {
 
 function matchQuery(mysqlQuery, influxQuery, res) {
   pool.query(mysqlQuery, function(err, rows, fields) {
-    // Connection is automatically released when query resolves
-    console.log("Station data received from SQL");
     influx
       .query(influxQuery)
       .then(results => {
