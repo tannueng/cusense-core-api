@@ -98,7 +98,9 @@ router.get("/day/:type", (req, res) => {
       defaultSQLquery,
       "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 mean(temp) as mean, last(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 24h group by topic",
       res
-    );
+    ); 
+  } else {
+    res.status(400).send({ message: 'Invalid URL Parameter.' });
   }
 });
 
