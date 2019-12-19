@@ -28,7 +28,7 @@ const pool = mysql.createPool({
 router.get("/last-day", (req, res) => {
   influx
     .query(
-      "select mean(*) from airdata where time > now() - 24h group by sensorid"
+      "select mean(*) from airdata where time > now() - 24h group by topic"
     )
     .then(results => {
       res.json(results);
@@ -58,22 +58,22 @@ router.get("/active", (req, res) => {
     influx
       .query("select mean(*) from airdata group by topic")
       .then(results => {
-        console.log(results);
+        // console.log(results);
         console.log("before loop");
         let final_result = {};
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
-              console.log(
-                "in loop matches: " + rows[i].topic + " & " + results[j].topic
-              );
+              // console.log(
+              //   "in loop matches: " + rows[i].topic + " & " + results[j].topic
+              // );
               // rows[i].info = results[j];
               final_result[rows[i].id] = results[j];
               final_result[rows[i].id].info = rows[i];
               // console.log("final_result", final_result);
             }
           }
-          console.log("in loop i=" + i);
+          // console.log("in loop i=" + i);
         }
         console.log("after loop");
         res.json(final_result);
@@ -84,23 +84,23 @@ router.get("/active", (req, res) => {
 
 router.get("/day/pm", (req, res) => {
   pool.query(
-    "SELECT stationid,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
+    "SELECT topic,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
     function(err, rows, fields) {
       // Connection is automatically released when query resolves
       console.log("Station data received from SQL");
       influx
         .query(
-          "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by sensorid"
+          "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by topic"
         )
         .then(results => {
           let final_result = {};
           for (i = 0; i < rows.length; i++) {
             for (j = 0; j < results.length; j++) {
-              if (rows[i].stationid == results[j].sensorid) {
-                console.log("in loop matches");
+              if (rows[i].topic == results[j].topic) {
+                // console.log("in loop matches");
                 final_result[rows[i].id] = results[j];
                 final_result[rows[i].id].info = rows[i];
-                console.log("final_result", final_result);
+                // console.log("final_result", final_result);
               }
             }
           }
@@ -113,8 +113,8 @@ router.get("/day/pm", (req, res) => {
 
 router.get("/day2/pm", (req, res) => {
   matchQuery(
-    "SELECT stationid,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
-    "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by sensorid",
+    "SELECT topic,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
+    "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by topic",
     res
   );
 });
@@ -129,11 +129,9 @@ function matchQuery(mysqlQuery, influxQuery, res) {
         let final_result = {};
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
-            if (rows[i].stationid == results[j].sensorid) {
-              console.log("in loop matches");
+            if (rows[i].topic == results[j].topic) {
               final_result[rows[i].id] = results[j];
               final_result[rows[i].id].info = rows[i];
-              console.log("final_result", final_result);
             }
           }
         }
