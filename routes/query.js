@@ -36,7 +36,7 @@ router.get("/last-day", (req, res) => {
     .catch(console.error);
 });
 
-router.get("/station", (req, res) => {
+router.get("/stations", (req, res) => {
   pool.query("SELECT * FROM station WHERE publish = 1", function(
     err,
     rows,
@@ -83,38 +83,17 @@ router.get("/active", (req, res) => {
 });
 
 router.get("/day/pm", (req, res) => {
-  pool.query(
-    "SELECT topic,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
-    function(err, rows, fields) {
-      // Connection is automatically released when query resolves
-      console.log("Station data received from SQL");
-      influx
-        .query(
-          "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by topic"
-        )
-        .then(results => {
-          let final_result = {};
-          for (i = 0; i < rows.length; i++) {
-            for (j = 0; j < results.length; j++) {
-              if (rows[i].topic == results[j].topic) {
-                // console.log("in loop matches");
-                final_result[rows[i].id] = results[j];
-                final_result[rows[i].id].info = rows[i];
-                // console.log("final_result", final_result);
-              }
-            }
-          }
-          res.json(final_result);
-        })
-        .catch(console.error);
-    }
-  );
-});
-
-router.get("/day2/pm", (req, res) => {
   matchQuery(
     "SELECT topic,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
     "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by topic",
+    res
+  );
+});
+
+router.get("/realtime/all", (req, res) => {
+  matchQuery(
+    "SELECT topic,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
+    "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 10m group by topic",
     res
   );
 });
