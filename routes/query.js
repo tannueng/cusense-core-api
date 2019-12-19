@@ -27,7 +27,9 @@ const pool = mysql.createPool({
 
 router.get("/last-day", (req, res) => {
   influx
-    .query("select mean(*) from airdata where time > now() - 24h group by sensorid")
+    .query(
+      "select mean(*) from airdata where time > now() - 24h group by sensorid"
+    )
     .then(results => {
       res.json(results);
     })
@@ -69,7 +71,9 @@ router.get("/active", (req, res) => {
               console.log("final_result", final_result);
             }
           }
+          console.log("in loop i=" + i);
         }
+        console.log("after loop");
         res.json(final_result);
       })
       .catch(console.error);
@@ -106,36 +110,35 @@ router.get("/day/pm", (req, res) => {
 });
 
 router.get("/day2/pm", (req, res) => {
-  matchQuery("SELECT stationid,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
-  "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by sensorid")
+  matchQuery(
+    "SELECT stationid,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
+    "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by sensorid",
+    res
+  );
 });
 
-function matchQuery(mysqlQuery,influxQuery) {
-  pool.query(
-    mysqlQuery,
-    function(err, rows, fields) {
-      // Connection is automatically released when query resolves
-      console.log("Station data received from SQL");
-      influx
-        .query(
-          influxQuery
-        )
-        .then(results => {
-          let final_result = {};
-          for (i = 0; i < rows.length; i++) {
-            for (j = 0; j < results.length; j++) {
-              if (rows[i].stationid == results[j].sensorid) {
-                console.log("in loop matches");
-                final_result[rows[i].id] = results[j];
-                final_result[rows[i].id].info = rows[i];
-                console.log("final_result", final_result);
-              }
+function matchQuery(mysqlQuery, influxQuery, res) {
+  pool.query(mysqlQuery, function(err, rows, fields) {
+    // Connection is automatically released when query resolves
+    console.log("Station data received from SQL");
+    influx
+      .query(influxQuery)
+      .then(results => {
+        let final_result = {};
+        for (i = 0; i < rows.length; i++) {
+          for (j = 0; j < results.length; j++) {
+            if (rows[i].stationid == results[j].sensorid) {
+              console.log("in loop matches");
+              final_result[rows[i].id] = results[j];
+              final_result[rows[i].id].info = rows[i];
+              console.log("final_result", final_result);
             }
           }
-          res.json(final_result);
-        })
-        .catch(console.error);
-    }
-  );
-};
+        }
+        res.json(final_result);
+      })
+      .catch(console.error);
+  });
+}
+
 module.exports = router;
