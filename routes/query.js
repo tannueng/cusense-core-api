@@ -63,6 +63,8 @@ router.get("/active", (req, res) => {
         let final_result = {};
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
+            console.log(rows[i].stationid, results[j].sensorid);
+
             if (rows[i].stationid == results[j].sensorid) {
               console.log("in loop matches");
               // rows[i].info = results[j];
