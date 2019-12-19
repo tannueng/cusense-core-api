@@ -110,7 +110,7 @@ router.get("/day2/pm", (req, res) => {
   "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from ss2 where time > now() - 24h group by sensorid")
 });
 
-matchQuery(mysqlQuery,influxQuery) {
+function matchQuery(mysqlQuery,influxQuery) {
   pool.query(
     mysqlQuery,
     function(err, rows, fields) {
@@ -137,5 +137,5 @@ matchQuery(mysqlQuery,influxQuery) {
         .catch(console.error);
     }
   );
-}
+};
 module.exports = router;
