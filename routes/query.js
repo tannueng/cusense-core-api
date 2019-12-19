@@ -63,14 +63,14 @@ router.get("/active", (req, res) => {
         let final_result = {};
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
-            console.log(rows[i].topic, results[j].topic);
-
             if (rows[i].topic == results[j].topic) {
-              console.log("in loop matches");
+              console.log(
+                "in loop matches: " + rows[i].topic + " & " + results[j].topic
+              );
               // rows[i].info = results[j];
               final_result[rows[i].id] = results[j];
               final_result[rows[i].id].info = rows[i];
-              console.log("final_result", final_result);
+              // console.log("final_result", final_result);
             }
           }
           console.log("in loop i=" + i);
