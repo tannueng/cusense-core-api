@@ -93,7 +93,7 @@ router.get("/day/pm", (req, res) => {
 router.get("/realtime/all", (req, res) => {
   matchQuery(
     "SELECT topic,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1",
-    "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 10m group by topic",
+    "select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m group by topic",
     res
   );
 });
