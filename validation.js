@@ -35,7 +35,7 @@ const loginValidation = data => {
 //Direct InfluxDB Query
 const directQueryValidation = data => {
   const schema = Joi.object({
-    query: Joi.required().string()
+    query: Joi.string().required()
   });
   return schema.validate(data);
 };
