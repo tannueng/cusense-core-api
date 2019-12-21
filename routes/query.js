@@ -26,7 +26,7 @@ const pool = mysql.createPool({
 });
 
 defaultSQLquery =
-  "SELECT topic,project,id,lat,lon,name,province,tambol,amphoe FROM station WHERE publish = 1";
+  "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1";
 
 router.get("/last-day", (req, res) => {
   influx
@@ -39,7 +39,7 @@ router.get("/last-day", (req, res) => {
     .catch(console.error);
 });
 
-router.get("/stations", (req, res) => {
+router.get("/stations/all", (req, res) => {
   pool.query("SELECT * FROM station WHERE publish = 1", function(
     err,
     rows,
@@ -49,6 +49,8 @@ router.get("/stations", (req, res) => {
     res.json(rows);
   });
 });
+
+
 
 router.get("/active", (req, res) => {
   pool.query("SELECT * FROM station WHERE publish = 1", function(
@@ -111,6 +113,9 @@ router.get("/realtime/all", (req, res) => {
     res
   );
 });
+
+
+
 
 function matchQuery(mysqlQuery, influxQuery, res) {
   pool.query(mysqlQuery, function(err, rows, fields) {

@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 
 //Import Routes
+const stationRoute = require("./routes/stations");
 const queryRoute = require("./routes/query");
 const authRoute = require("./routes/auth");
 
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 });
 
 //Route Middleware
+app.use("/api/v1/stationInfo", stationRoute);
 app.use("/api/v1/check", queryRoute);
 app.use("/api/v1/users", authRoute);
 
