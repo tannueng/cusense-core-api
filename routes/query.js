@@ -67,7 +67,7 @@ router.post("/direct", (req, res) => {
         res.json(final_result);
       })
       .catch(error => {
-        res.status(400).send(error.message);
+        res.status(400).send(error.message.error);
         console.log(error);
       });
   });
