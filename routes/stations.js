@@ -50,10 +50,8 @@ router.get("/active", (req, res) => {
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
-              final_result[rows[i].id] = results[j].topic;
+              final_result[rows[i].id] = {};
               final_result[rows[i].id].info = rows[i];
-
-              res.json(final_result);
             }
           }
         }
