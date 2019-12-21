@@ -28,15 +28,38 @@ const pool = mysql.createPool({
 defaultSQLquery =
   "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province,country FROM station WHERE publish = 1";
 
-router.get("/stations/all", (req, res) => {
+router.get("/all", (req, res) => {
   pool.query(defaultSQLquery, function(err, rows, fields) {
     // Connection is automatically released when query resolves
     let final_result = {};
     for (i = 0; i < rows.length; i++) {
       final_result[rows[i].id] = rows[i];
     }
-
     res.json(final_result);
+  });
+});
+router.get("/active", (req, res) => {
+  pool.query(defaultSQLquery, function(err, rows, fields) {
+    // Connection is automatically released when query resolves
+    influx
+      .query(
+        "select last(*) from airdata where time > now() - 70m group by topic"
+      )
+      .then(results => {
+        let final_result = {};
+        for (i = 0; i < rows.length; i++) {
+          for (j = 0; j < results.length; j++) {
+            if (rows[i].topic == results[j].topic) {
+              final_result[rows[i].id] = rows[i];
+              final_result[rows[i].id].info = rows[i];
+
+              res.json(final_result);
+            }
+          }
+        }
+        res.json(final_result);
+      })
+      .catch(console.error);
   });
 });
 

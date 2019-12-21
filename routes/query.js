@@ -50,7 +50,9 @@ router.get("/stations/all", (req, res) => {
   });
 });
 
-
+router.post("/direct", (req, res) => {
+  matchQuery(defaultSQLquery, req.body.query, res);
+});
 
 router.get("/active", (req, res) => {
   pool.query("SELECT * FROM station WHERE publish = 1", function(
@@ -113,9 +115,6 @@ router.get("/realtime/all", (req, res) => {
     res
   );
 });
-
-
-
 
 function matchQuery(mysqlQuery, influxQuery, res) {
   pool.query(mysqlQuery, function(err, rows, fields) {
