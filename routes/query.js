@@ -54,7 +54,7 @@ router.get("/stations/all", (req, res) => {
 router.post("/direct", (req, res) => {
   const { error } = directQueryValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-
+  
   pool.query(defaultSQLquery, function(err, rows, fields) {
     influx
       .query(req.body.query)
