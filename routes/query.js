@@ -51,7 +51,26 @@ router.get("/stations/all", (req, res) => {
 });
 
 router.post("/direct", (req, res) => {
-  matchQuery(defaultSQLquery, req.body.query, res);
+  pool.query(defaultSQLquery, function(err, rows, fields) {
+    influx
+      .query(req.body.query)
+      .then(results => {
+        let final_result = {};
+        for (i = 0; i < rows.length; i++) {
+          for (j = 0; j < results.length; j++) {
+            if (rows[i].topic == results[j].topic) {
+              final_result[rows[i].id] = results[j];
+              final_result[rows[i].id].info = rows[i];
+            }
+          }
+        }
+        res.json(final_result);
+      })
+      .catch(() => {
+        res.status(400).send("Bad Request");
+        console.log;
+      });
+  });
 });
 
 router.get("/active", (req, res) => {
