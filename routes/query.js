@@ -176,7 +176,7 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
     const { error } = dateValidation(date);
     if (error) return res.status(400).send(error.details[0].message);
 
-    pool.query(defaultSQLquery, function(err, rows, fields) {
+    pool.query(byStationSQLQuery(topic), function(err, rows, fields) {
       influx
         .query(
           "select mean(*) from airdata where time >= '2019-12-21' and time <= '2019-12-21' + 1d and \"topic\" = 'nansensor/CU-S0040' group by time(1h)"
@@ -248,6 +248,14 @@ function matchQuery(mysqlQuery, influxQuery, res) {
       })
       .catch(console.error);
   });
+}
+
+function byStationSQLQuery(topic) {
+  return (
+    "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1 AND topic = '" +
+    topic +
+    "'"
+  );
 }
 
 module.exports = router;
