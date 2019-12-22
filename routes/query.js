@@ -65,7 +65,7 @@ router.post("/direct", (req, res) => {
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
-              final_result[rows[i].id].data[k] = {};
+              final_result[rows[i].id].data = [a,b,c];
               // final_result[rows[i].id].data[k] = results[j]; //Overwrites the old object
               final_result[rows[i].id].info = rows[i];
               k++;
