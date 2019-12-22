@@ -33,10 +33,10 @@ const pool = mysql.createPool({
 defaultSQLquery =
   "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1";
 
-router.get("/", (req, res) => {
+router.get("/getpttdata", (req, res) => {
   matchQuery(
     byStationSQLQuery("PTT/ptt.mainoffice"),
-    "select last(pm25) as pm25, last(temp) as temp, last(humid) as humid, last(temp) as temp from airdata where time > now() - 60m and \"topic\" = 'PTT/ptt.mainoffice'",
+    "select mean(pm25) as pm25, mean(temp) as temp, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 2d and \"topic\" = 'PTT/ptt.mainoffice'",
     res
   );
 });
