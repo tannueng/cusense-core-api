@@ -1,7 +1,11 @@
 const router = require("express").Router();
 const Influx = require("influx");
 const verify = require("./verifyToken");
-const { directQueryValidation } = require("../validation");
+const {
+  directQueryValidation,
+  dateValidation,
+  monthValidation
+} = require("../validation");
 const mysql = require("mysql2");
 const dotenv = require("dotenv");
 
@@ -40,17 +44,6 @@ router.get("/last-day", (req, res) => {
     .catch(console.error);
 });
 
-router.get("/stations/all", (req, res) => {
-  pool.query("SELECT * FROM station WHERE publish = 1", function(
-    err,
-    rows,
-    fields
-  ) {
-    // Connection is automatically released when query resolves
-    res.json(rows);
-  });
-});
-
 router.post("/direct", (req, res) => {
   const { error } = directQueryValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -62,8 +55,6 @@ router.post("/direct", (req, res) => {
         let final_result = {};
         let firstTime = true;
         for (i = 0; i < rows.length; i++) {
-          // let k = 0;
-
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
               if (firstTime) {
@@ -72,8 +63,6 @@ router.post("/direct", (req, res) => {
               }
               final_result[rows[i].id].data.push(results[j]);
               final_result[rows[i].id].info = rows[i];
-              // k++;
-
               firstTime = false;
             }
           }
@@ -142,12 +131,66 @@ router.get("/day/:type", (req, res) => {
   }
 });
 
-router.get("/realtime/all", (req, res) => {
-  matchQuery(
-    defaultSQLquery,
-    "select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m group by topic",
-    res
-  );
+router.get("/realtime/:type", (req, res) => {
+  const { type } = req.params;
+  if (type == "pm") {
+    matchQuery(
+      defaultSQLquery,
+      "select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10 from airdata where time > now() - 70m group by topic",
+      res
+    );
+  } else if (type == "all") {
+    matchQuery(
+      defaultSQLquery,
+      "select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m group by topic",
+      res
+    );
+  } else {
+    res.status(400).send("Invalid URL Parameter.");
+  }
+});
+
+router.post("/byStation/:timeframe/:date", (req, res) => {
+  const { timeframe } = req.params;
+  const { date } = req.params;
+  const { topic } = req.body.topic;
+
+  if (timeframe != "monthly" || timeframe != "daily")
+    res.status(400).send("Invalid URL Parameter.");
+
+  if (timeframe == "monthly") {
+    const { error } = monthValidation(date);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    matchQuery(
+      defaultSQLquery,
+      "select mean(*) from airdata where time >= '" +
+        date +
+        "' and time <= '" +
+        date +
+        "-01' + 30d and  \"topic\" = '" +
+        topic +
+        "' group by time(1d)",
+      res
+    );
+  } else if (timeframe == "daily") {
+    const { error } = dateValidation(date);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    matchQuery(
+      defaultSQLquery,
+      "select mean(*) from airdata where time >= '" +
+        date +
+        "' and time <= '" +
+        date +
+        "' + 1d and  \"topic\" = '" +
+        topic +
+        "' group by time(1h)",
+      res
+    );
+  } else {
+    res.status(400).send("Invalid URL Parameter.");
+  }
 });
 
 function matchQuery(mysqlQuery, influxQuery, res) {
@@ -156,13 +199,20 @@ function matchQuery(mysqlQuery, influxQuery, res) {
       .query(influxQuery)
       .then(results => {
         let final_result = {};
+        let firstTime = true;
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
-              final_result[rows[i].id] = results[j];
+              if (firstTime) {
+                final_result[rows[i].id] = {};
+                final_result[rows[i].id].data = [];
+              }
+              final_result[rows[i].id].data.push(results[j]);
               final_result[rows[i].id].info = rows[i];
+              firstTime = false;
             }
           }
+          firstTime = true;
         }
         res.json(final_result);
       })

@@ -32,10 +32,18 @@ const loginValidation = data => {
   return schema.validate(data);
 };
 
-//Direct InfluxDB Query
-const directQueryValidation = data => {
+//Month Validation
+const monthValidation = data => {
   const schema = Joi.object({
-    query: Joi.string().required()
+    query: Joi.date().format('YYYY-MM')
+  });
+  return schema.validate(data);
+};
+
+//Date Validation
+const dateValidation = data => {
+  const schema = Joi.object({
+    query: Joi.date().format('YYYY-MM-DD')
   });
   return schema.validate(data);
 };
@@ -43,3 +51,5 @@ const directQueryValidation = data => {
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.directQueryValidation = directQueryValidation;
+module.exports.monthValidation = monthValidation;
+module.exports.dateValidation = dateValidation;
