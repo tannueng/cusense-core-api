@@ -60,6 +60,7 @@ router.post("/direct", (req, res) => {
       .query(req.body.query)
       .then(results => {
         let final_result = {};
+        final_result.data = {};
         let k = 0;
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
