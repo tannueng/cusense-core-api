@@ -113,7 +113,7 @@ router.get("/active", (req, res) => {
 });
 
 router.get("/day/:type", (req, res) => {
-  const { type } = req.params;
+  const { type } = req.params.type;
   if (type == "pm") {
     matchQuery(
       defaultSQLquery,
@@ -132,7 +132,7 @@ router.get("/day/:type", (req, res) => {
 });
 
 router.get("/realtime/:type", (req, res) => {
-  const { type } = req.params;
+  const { type } = req.params.type;
   if (type == "pm") {
     matchQuery(
       defaultSQLquery,
@@ -151,12 +151,12 @@ router.get("/realtime/:type", (req, res) => {
 });
 
 router.post("/byStation/:timeframe/:date", (req, res) => {
-  const { timeframe } = req.params;
-  const { date } = req.params;
+  const { timeframe } = req.params.timeframe;
+  const { date } = req.params.date;
   const { topic } = req.body.topic;
 
   if (timeframe != "monthly" || timeframe != "daily")
-    res.status(400).send("Invalid URL Parameter.");
+    res.status(400).send("Invalid URL Parameter. Catch");
 
   if (timeframe == "monthly") {
     const { error } = monthValidation(date);
