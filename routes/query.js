@@ -165,7 +165,7 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
       defaultSQLquery,
       "select mean(*) from airdata where time >= '" +
         date +
-        "' and time <= '" +
+        "-01' and time <= '" +
         date +
         "-01' + 30d and  \"topic\" = '" +
         topic +
@@ -178,13 +178,16 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
 
     matchQuery(
       defaultSQLquery,
-      "select mean(*) from airdata where time >= '" +
-        date +
-        "' and time <= '" +
-        date +
-        "' + 1d and  \"topic\" = '" +
-        topic +
-        "' group by time(1h)",
+      "select mean(*) from airdata where time >= '2019-12-21' and time <= '2019-12-21' + 1d and \"topic\" = 'nansensor/CU-S0040' group by time(1h)"
+
+      // "select mean(*) from airdata where time >= '" +
+      //   date +
+      //   "' and time <= '" +
+      //   date +
+      //   "' + 1d and  \"topic\" = '" +
+      //   topic +
+      //   "' group by time(1h)"
+        ,
       res
     );
   } else {
@@ -213,6 +216,7 @@ function matchQuery(mysqlQuery, influxQuery, res) {
           }
           firstTime = true;
         }
+        console.log(final_result);
         res.json(final_result);
       })
       .catch(console.error);
