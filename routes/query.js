@@ -155,6 +155,8 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
   const { date } = req.params.date;
   const { topic } = req.body.topic;
 
+  console.log(timeframe, date, topic);
+
   if (timeframe == "monthly") {
     const { error } = monthValidation(date);
     if (error) return res.status(400).send(error.details[0].message);
