@@ -36,7 +36,7 @@ defaultSQLquery =
 router.get("/getpttdata", (req, res) => {
   matchQuery(
     byStationSQLQuery("PTT/ptt.mainoffice"),
-    "select mean(pm25) as pm25, mean(temp) as temp, mean(humid) as humid, mean(temp) as temp from airdata where time > now() -1h and \"topic\" = 'PTT/ptt.mainoffice'",
+    "select mean(pm25) as pm25, mean(temp) as temp, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 2d and \"topic\" = 'PTT/ptt.mainoffice'",
     res
   );
 });
