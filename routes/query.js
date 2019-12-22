@@ -131,6 +131,32 @@ router.get("/day/:type", (req, res) => {
   }
 });
 
+router.post("/day/:type", (req, res) => {
+  const type = req.params.type;
+  const topic = req.body.topic;
+  if (type == "pm") {
+    matchSpecificQuery(
+      byStationSQLQuery(topic),
+      'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h and "topic" = \'' +
+        topic +
+        "'",
+      topic,
+      res
+    );
+  } else if (type == "all") {
+    matchSpecificQuery(
+      byStationSQLQuery(topic),
+      'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, last(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 24h and "topic" = \'' +
+        topic +
+        "'",
+      topic,
+      res
+    );
+  } else {
+    res.status(400).send("Invalid URL Parameter.");
+  }
+});
+
 router.get("/realtime/:type", (req, res) => {
   const type = req.params.type;
   if (type == "pm") {
@@ -161,94 +187,100 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
     const { error } = monthValidation(date);
     if (error) return res.status(400).send(error.details[0].message);
 
-    pool.query(byStationSQLQuery(topic), function(err, rows, fields) {
-      influx
-        .query(
-          //TODO change mean(*)
-          "select mean(*) from airdata where time >= '" +
-            date +
-            "-01' - 7h and time <= '" +
-            date +
-            "-01' + 30d - 7h and  \"topic\" = '" +
-            topic +
-            "' group by time(1d)"
-        )
-        .then(results => {
-          let final_result = {};
-          let firstTime = true;
-          // console.log(results);
-          for (i = 0; i < rows.length; i++) {
-            for (j = 0; j < results.length; j++) {
-              if (rows[i].topic == topic) {
-                if (firstTime) {
-                  final_result[rows[i].id] = {};
-                  final_result[rows[i].id].data = [];
-                }
-                final_result[rows[i].id].data.push(results[j]);
-                final_result[rows[i].id].info = rows[i];
-                firstTime = false;
-              }
-            }
-            firstTime = true;
-          }
-          // console.log(final_result);
-          res.json(final_result);
-        })
-        .catch(console.error);
-    });
+    matchSpecificQuery(
+      byStationSQLQuery(topic),
+      //TODO change mean(*)
+      "select mean(*) from airdata where time >= '" +
+      date +
+      "-01' - 7h and time <= '" +
+      date +
+      "-01' + 30d - 7h and  \"topic\" = '" +
+      topic +
+      "' group by time(1d)",
+      topic,
+      res
+    );
+
+    // pool.query(byStationSQLQuery(topic), function(err, rows, fields) {
+    //   influx
+    //     .query(
+          
+    //     )
+    //     .then(results => {
+    //       let final_result = {};
+    //       let firstTime = true;
+    //       // console.log(results);
+    //       for (i = 0; i < rows.length; i++) {
+    //         for (j = 0; j < results.length; j++) {
+    //           if (rows[i].topic == topic) {
+    //             if (firstTime) {
+    //               final_result[rows[i].id] = {};
+    //               final_result[rows[i].id].data = [];
+    //             }
+    //             final_result[rows[i].id].data.push(results[j]);
+    //             final_result[rows[i].id].info = rows[i];
+    //             firstTime = false;
+    //           }
+    //         }
+    //         firstTime = true;
+    //       }
+    //       // console.log(final_result);
+    //       res.json(final_result);
+    //     })
+    //     .catch(console.error);
+    // });
   } else if (timeframe == "daily") {
     const { error } = dateValidation(date);
     if (error) return res.status(400).send(error.details[0].message);
 
-    pool.query(byStationSQLQuery(topic), function(err, rows, fields) {
-      influx
-        .query(
-          //TODO change mean(*)
-          "select mean(*) from airdata where time >= '" +
-            date +
-            "' - 7h and time <= '" +
-            date +
-            "' + 1d - 7h and \"topic\" = '" +
-            topic +
-            "' group by time(1h)"
-        )
-        .then(results => {
-          let final_result = {};
-          let firstTime = true;
-          // console.log(results);
-          for (i = 0; i < rows.length; i++) {
-            for (j = 0; j < results.length; j++) {
-              if (rows[i].topic == topic) {
-                if (firstTime) {
-                  final_result[rows[i].id] = {};
-                  final_result[rows[i].id].data = [];
-                }
-                final_result[rows[i].id].data.push(results[j]);
-                final_result[rows[i].id].info = rows[i];
-                firstTime = false;
-              }
-            }
-            firstTime = true;
-          }
-          // console.log(final_result);
-          res.json(final_result);
-        })
-        .catch(console.error);
-    });
+    matchSpecificQuery(
+      byStationSQLQuery(topic),
+      "select mean(*) from airdata where time >= '" +
+        date +
+        "' - 7h and time <= '" +
+        date +
+        "' + 1d - 7h and \"topic\" = '" +
+        topic +
+        "' group by time(1h)",
+      topic,
+      res
+    );
 
-    // matchQuery(
-    //   defaultSQLquery,
-    //   "select mean(*) from airdata where time >= '2019-12-21' and time <= '2019-12-21' + 1d and \"topic\" = 'nansensor/CU-S0040' group by time(1h)",
-
-    //   // "select mean(*) from airdata where time >= '" +
-    //   //   date +
-    //   //   "' and time <= '" +
-    //   //   date +
-    //   //   "' + 1d and  \"topic\" = '" +
-    //   //   topic +
-    //   //   "' group by time(1h)"
-    //   res
-    // );
+    // pool.query(byStationSQLQuery(topic), function(err, rows, fields) {
+    //   influx
+    //     .query(
+    //       //TODO change mean(*)
+    //       "select mean(*) from airdata where time >= '" +
+    //         date +
+    //         "' - 7h and time <= '" +
+    //         date +
+    //         "' + 1d - 7h and \"topic\" = '" +
+    //         topic +
+    //         "' group by time(1h)"
+    //     )
+    //     .then(results => {
+    //       let final_result = {};
+    //       let firstTime = true;
+    //       // console.log(results);
+    //       for (i = 0; i < rows.length; i++) {
+    //         for (j = 0; j < results.length; j++) {
+    //           if (rows[i].topic == topic) {
+    //             if (firstTime) {
+    //               final_result[rows[i].id] = {};
+    //               final_result[rows[i].id].data = [];
+    //             }
+    //             final_result[rows[i].id].data.push(results[j]);
+    //             final_result[rows[i].id].info = rows[i];
+    //             firstTime = false;
+    //           }
+    //         }
+    //         firstTime = true;
+    //       }
+    //       // console.log(final_result);
+    //       res.json(final_result);
+    //     })
+    //     .catch(console.error);
+    // });
   } else {
     res.status(400).send("Invalid URL Parameter.");
   }
@@ -264,6 +296,33 @@ function matchQuery(mysqlQuery, influxQuery, res) {
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
+              if (firstTime) {
+                final_result[rows[i].id] = {};
+                final_result[rows[i].id].data = [];
+              }
+              final_result[rows[i].id].data.push(results[j]);
+              final_result[rows[i].id].info = rows[i];
+              firstTime = false;
+            }
+          }
+          firstTime = true;
+        }
+        res.json(final_result);
+      })
+      .catch(console.error);
+  });
+}
+
+function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
+  pool.query(mysqlQuery, function(err, rows, fields) {
+    influx
+      .query(influxQuery)
+      .then(results => {
+        let final_result = {};
+        let firstTime = true;
+        for (i = 0; i < rows.length; i++) {
+          for (j = 0; j < results.length; j++) {
+            if (rows[i].topic == topic) {
               if (firstTime) {
                 final_result[rows[i].id] = {};
                 final_result[rows[i].id].data = [];
