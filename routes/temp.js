@@ -50,6 +50,11 @@ function matchQuery(mysqlQuery, influxQuery, res) {
         let firstTime = true;
         console.log(rows);
         console.log(results);
+
+        if (results == "") {
+          res.send("No data for PTT/ptt.mainoffice for the last 1 hour.");
+        }
+
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == "PTT/ptt.mainoffice") {
@@ -64,9 +69,7 @@ function matchQuery(mysqlQuery, influxQuery, res) {
           }
           firstTime = true;
         }
-        if (final_result == {}) {
-          res.send("No data for PTT/ptt.mainoffice for the last 1 hour.");
-        }
+
         res.json(final_result);
       })
       .catch(console.error);
