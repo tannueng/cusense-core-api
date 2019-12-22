@@ -137,7 +137,7 @@ function matchQuery(mysqlQuery, influxQuery, res) {
           }
           firstTime = true;
         }
-        res.json(results);
+        res.json(final_result);
       })
       .catch(console.error);
   });
