@@ -200,7 +200,7 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
             firstTime = true;
           }
           // console.log(final_result);
-          res.json(results);
+          res.json(final_result);
         })
         .catch(console.error);
     });
