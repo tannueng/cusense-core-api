@@ -65,7 +65,8 @@ router.post("/direct", (req, res) => {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
               final_result[rows[i].id] = {};
-              final_result[rows[i].id].data = results[j];
+              final_result[rows[i].id].data = [];
+              final_result[rows[i].id].data[k] = results[j];
               final_result[rows[i].id].info = rows[i];
               k++;
             }
