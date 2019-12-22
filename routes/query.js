@@ -60,11 +60,13 @@ router.post("/direct", (req, res) => {
       .query(req.body.query)
       .then(results => {
         let final_result = {};
-        final_result[rows[i].id] = {};
-        final_result[rows[i].id].data = [];
-        
+
         for (i = 0; i < rows.length; i++) {
           // let k = 0;
+
+          final_result[rows[i].id] = {};
+          final_result[rows[i].id].data = [];
+          
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
               final_result[rows[i].id].data.push(results[j]);
