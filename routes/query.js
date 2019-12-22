@@ -60,19 +60,24 @@ router.post("/direct", (req, res) => {
       .query(req.body.query)
       .then(results => {
         let final_result = {};
-
+        let firstTime = true;
         for (i = 0; i < rows.length; i++) {
           // let k = 0;
 
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
-              final_result[rows[i].id] = {};
-              final_result[rows[i].id].data = [];
+              if (firstTime) {
+                final_result[rows[i].id] = {};
+                final_result[rows[i].id].data = [];
+              }
               final_result[rows[i].id].data.push(results[j]);
               final_result[rows[i].id].info = rows[i];
               // k++;
+
+              firstTime = false;
             }
           }
+          firstTime = true;
         }
         res.json(final_result);
       })
