@@ -187,15 +187,15 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
           // console.log(results);
           for (i = 0; i < rows.length; i++) {
             for (j = 0; j < results.length; j++) {
-              //     if (rows[i].topic == results[j].topic) {
-              if (firstTime) {
-                final_result[rows[i].id] = {};
-                final_result[rows[i].id].data = [];
+              if (rows[i].topic == topic) {
+                if (firstTime) {
+                  final_result[rows[i].id] = {};
+                  final_result[rows[i].id].data = [];
+                }
+                final_result[rows[i].id].data.push(results[j]);
+                final_result[rows[i].id].info = rows[i];
+                firstTime = false;
               }
-              final_result[rows[i].id].data.push(results[j]);
-              final_result[rows[i].id].info = rows[i];
-              firstTime = false;
-              //     }
             }
             firstTime = true;
           }
