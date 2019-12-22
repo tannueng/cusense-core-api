@@ -64,6 +64,9 @@ function matchQuery(mysqlQuery, influxQuery, res) {
           }
           firstTime = true;
         }
+        if (final_result == {}) {
+          res.send("No data for PTT/ptt.mainoffice for the last 1 hour.");
+        }
         res.json(final_result);
       })
       .catch(console.error);
