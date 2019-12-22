@@ -161,17 +161,43 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
     const { error } = monthValidation(date);
     if (error) return res.status(400).send(error.details[0].message);
 
-    matchQuery(
-      defaultSQLquery,
-      "select mean(*) from airdata where time >= '" +
-        date +
-        "-01' and time <= '" +
-        date +
-        "-01' + 30d and  \"topic\" = '" +
-        topic +
-        "' group by time(1d)",
-      res
-    );
+    pool.query(byStationSQLQuery(topic), function(err, rows, fields) {
+      influx
+        .query(
+          //TODO change mean(*)
+          "select mean(*) from airdata where time >= '" +
+            date +
+            "-01' and time <= '" +
+            date +
+            "-01' + 30d and  \"topic\" = '" +
+            topic +
+            "' group by time(1d)"
+        )
+        .then(results => {
+          let final_result = {};
+          let firstTime = true;
+          // console.log(results);
+          for (i = 0; i < rows.length; i++) {
+            for (j = 0; j < results.length; j++) {
+              if (rows[i].topic == topic) {
+                if (firstTime) {
+                  final_result[rows[i].id] = {};
+                  final_result[rows[i].id].data = [];
+                }
+                final_result[rows[i].id].data.push(results[j]);
+                final_result[rows[i].id].info = rows[i];
+                firstTime = false;
+              }
+            }
+            firstTime = true;
+          }
+          // console.log(final_result);
+          res.json(final_result);
+        })
+        .catch(console.error);
+    });
+
+
   } else if (timeframe == "daily") {
     const { error } = dateValidation(date);
     if (error) return res.status(400).send(error.details[0].message);
@@ -179,7 +205,14 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
     pool.query(byStationSQLQuery(topic), function(err, rows, fields) {
       influx
         .query(
-          "select mean(*) from airdata where time >= '2019-12-21' - 7h and time <= '2019-12-21' + 1d - 7h and \"topic\" = 'nansensor/CU-S0040' group by time(1h)"
+          //TODO change mean(*)
+          "select mean(*) from airdata where time >= '" +
+            date +
+            "' - 7h and time <= '" +
+            date +
+            "' + 1d - 7h and \"topic\" = '" +
+            topic +
+            "' group by time(1h)"
         )
         .then(results => {
           let final_result = {};
