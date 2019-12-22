@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const stationRoute = require("./routes/stations");
 const queryRoute = require("./routes/query");
 const authRoute = require("./routes/auth");
+const tempRoute = require("./routes/temp")
 
 dotenv.config();
 
@@ -29,6 +30,8 @@ app.get("/", (req, res) => {
 app.use("/api/v1/stationInfo", stationRoute);
 app.use("/api/v1/check", queryRoute);
 app.use("/api/v1/users", authRoute);
+
+app.use("/api/", tempRoute);
 
 // localhost:3333
 app.listen(3333, () => {

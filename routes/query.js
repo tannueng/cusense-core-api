@@ -179,7 +179,7 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
     pool.query(byStationSQLQuery(topic), function(err, rows, fields) {
       influx
         .query(
-          "select mean(*) from airdata where time >= '2019-12-21' and time <= '2019-12-21' + 1d and \"topic\" = 'nansensor/CU-S0040' group by time(1h)"
+          "select mean(*) from airdata where time >= '2019-12-21' - 7h and time <= '2019-12-21' + 1d - 7h and \"topic\" = 'nansensor/CU-S0040' group by time(1h)"
         )
         .then(results => {
           let final_result = {};
