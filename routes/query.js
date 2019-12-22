@@ -113,7 +113,7 @@ router.get("/active", (req, res) => {
 });
 
 router.get("/day/:type", (req, res) => {
-  const { type } = req.params.type;
+  const type = req.params.type;
   if (type == "pm") {
     matchQuery(
       defaultSQLquery,
@@ -132,7 +132,7 @@ router.get("/day/:type", (req, res) => {
 });
 
 router.get("/realtime/:type", (req, res) => {
-  const { type } = req.params.type;
+  const type = req.params.type;
   if (type == "pm") {
     matchQuery(
       defaultSQLquery,
@@ -151,9 +151,9 @@ router.get("/realtime/:type", (req, res) => {
 });
 
 router.post("/byStation/:timeframe/:date", (req, res) => {
-  const { timeframe } = req.params.timeframe;
-  const { date } = req.params.date;
-  const { topic } = req.body.topic;
+  const timeframe = req.params.timeframe;
+  const date = req.params.date;
+  const topic = req.body.topic;
 
   console.log(timeframe, date, topic);
 
