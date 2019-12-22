@@ -1,5 +1,7 @@
 //Validation
 const Joi = require("@hapi/joi");
+var moment = require('moment');
+moment().format();
 
 //Register Validation
 const registerValidation = data => {
