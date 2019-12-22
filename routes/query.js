@@ -167,9 +167,9 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
           //TODO change mean(*)
           "select mean(*) from airdata where time >= '" +
             date +
-            "-01' and time <= '" +
+            "-01' - 7h and time <= '" +
             date +
-            "-01' + 30d and  \"topic\" = '" +
+            "-01' + 30d - 7h and  \"topic\" = '" +
             topic +
             "' group by time(1d)"
         )
@@ -196,8 +196,6 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
         })
         .catch(console.error);
     });
-
-
   } else if (timeframe == "daily") {
     const { error } = dateValidation(date);
     if (error) return res.status(400).send(error.details[0].message);
