@@ -155,7 +155,7 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
   const { date } = req.params.date;
   const { topic } = req.body.topic;
 
-  if (timeframe != "monthly" || timeframe != "daily")
+  if (!(timeframe == "monthly" || timeframe == "daily"))
     res.status(400).send("Invalid URL Parameter. Catch");
 
   if (timeframe == "monthly") {
