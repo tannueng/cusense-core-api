@@ -176,6 +176,7 @@ router.get("/realtime/:type", (req, res) => {
   }
 });
 
+// POST /realtime
 router.post("/realtime/:type", (req, res) => {
   const type = req.params.type;
   const topic = req.body.topic;
@@ -185,18 +186,20 @@ router.post("/realtime/:type", (req, res) => {
   if (topic && !project) {
     if (type == "pm") {
       matchSpecificQuery(
-        defaultSQLquery,
+        byStationSQLQuery(topic),
         'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10 from airdata where time > now() - 70m and "topic" = \'' +
           topic +
           "'",
+        topic,
         res
       );
     } else if (type == "all") {
       matchSpecificQuery(
-        defaultSQLquery,
+        byStationSQLQuery(topic),
         'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m and "topic" = \'' +
           topic +
           "'",
+        topic,
         res
       );
     } else {
@@ -210,7 +213,7 @@ router.post("/realtime/:type", (req, res) => {
         byGroupSQLQuery(project),
         'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10 from airdata where time > now() - 70m and "group" = \'' +
           project +
-          "'",
+          "' group by topic",
         res
       );
     } else if (type == "all") {
@@ -218,7 +221,7 @@ router.post("/realtime/:type", (req, res) => {
         byGroupSQLQuery(project),
         'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m and "group" = \'' +
           project +
-          "'",
+          "' group by topic",
         res
       );
     } else {
