@@ -11,7 +11,7 @@ const tempRoute = require("./routes/temp")
 
 dotenv.config();
 
-//Connect to DB
+// Connect to DB
 mongoose.connect(
   process.env.MONGODB_CONNECT,
   { useNewUrlParser: true, useUnifiedTopology: true },
@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
 
 //Route Middleware
 app.use("/api/v1/stationInfo", stationRoute);
-app.use("/api/v1/check", queryRoute);
+app.use("/api/v1/sensorData", queryRoute);
 app.use("/api/v1/users", authRoute);
 
 app.use("/api/", tempRoute);

@@ -176,6 +176,35 @@ router.get("/realtime/:type", (req, res) => {
   }
 });
 
+router.post("/realtime/:type", (req, res) => {
+  const type = req.params.type;
+  const topic = req.body.topic;
+  const project = req.body.project;
+  if (topic && !project) {
+    res.send("topic only, no project");
+  }
+
+  // if (type == "pm") {
+  //   matchQuery(
+  //     defaultSQLquery,
+  //     'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10 from airdata where time > now() - 70m and "topic" = \'' +
+  //       topic +
+  //       "'",
+  //     res
+  //   );
+  // } else if (type == "all") {
+  //   matchQuery(
+  //     defaultSQLquery,
+  //     'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m and "topic" = \'' +
+  //       topic +
+  //       "'",
+  //     res
+  //   );
+  // } else {
+  //   res.status(400).send("Invalid URL Parameter.");
+  // }
+});
+
 router.post("/byStation/:timeframe/:date", (req, res) => {
   const timeframe = req.params.timeframe;
   const date = req.params.date;
@@ -191,44 +220,15 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
       byStationSQLQuery(topic),
       //TODO change mean(*)
       "select mean(*) from airdata where time >= '" +
-      date +
-      "-01' - 7h and time <= '" +
-      date +
-      "-01' + 30d - 7h and  \"topic\" = '" +
-      topic +
-      "' group by time(1d)",
+        date +
+        "-01' - 7h and time <= '" +
+        date +
+        "-01' + 30d - 7h and  \"topic\" = '" +
+        topic +
+        "' group by time(1d)",
       topic,
       res
     );
-
-    // pool.query(byStationSQLQuery(topic), function(err, rows, fields) {
-    //   influx
-    //     .query(
-          
-    //     )
-    //     .then(results => {
-    //       let final_result = {};
-    //       let firstTime = true;
-    //       // console.log(results);
-    //       for (i = 0; i < rows.length; i++) {
-    //         for (j = 0; j < results.length; j++) {
-    //           if (rows[i].topic == topic) {
-    //             if (firstTime) {
-    //               final_result[rows[i].id] = {};
-    //               final_result[rows[i].id].data = [];
-    //             }
-    //             final_result[rows[i].id].data.push(results[j]);
-    //             final_result[rows[i].id].info = rows[i];
-    //             firstTime = false;
-    //           }
-    //         }
-    //         firstTime = true;
-    //       }
-    //       // console.log(final_result);
-    //       res.json(final_result);
-    //     })
-    //     .catch(console.error);
-    // });
   } else if (timeframe == "daily") {
     const { error } = dateValidation(date);
     if (error) return res.status(400).send(error.details[0].message);
@@ -245,42 +245,6 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
       topic,
       res
     );
-
-    // pool.query(byStationSQLQuery(topic), function(err, rows, fields) {
-    //   influx
-    //     .query(
-    //       //TODO change mean(*)
-    //       "select mean(*) from airdata where time >= '" +
-    //         date +
-    //         "' - 7h and time <= '" +
-    //         date +
-    //         "' + 1d - 7h and \"topic\" = '" +
-    //         topic +
-    //         "' group by time(1h)"
-    //     )
-    //     .then(results => {
-    //       let final_result = {};
-    //       let firstTime = true;
-    //       // console.log(results);
-    //       for (i = 0; i < rows.length; i++) {
-    //         for (j = 0; j < results.length; j++) {
-    //           if (rows[i].topic == topic) {
-    //             if (firstTime) {
-    //               final_result[rows[i].id] = {};
-    //               final_result[rows[i].id].data = [];
-    //             }
-    //             final_result[rows[i].id].data.push(results[j]);
-    //             final_result[rows[i].id].info = rows[i];
-    //             firstTime = false;
-    //           }
-    //         }
-    //         firstTime = true;
-    //       }
-    //       // console.log(final_result);
-    //       res.json(final_result);
-    //     })
-    //     .catch(console.error);
-    // });
   } else {
     res.status(400).send("Invalid URL Parameter.");
   }
