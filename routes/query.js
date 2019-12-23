@@ -180,29 +180,53 @@ router.post("/realtime/:type", (req, res) => {
   const type = req.params.type;
   const topic = req.body.topic;
   const project = req.body.project;
-  if (topic && !project) {
-    res.send("topic only, no project");
-  }
 
-  // if (type == "pm") {
-  //   matchQuery(
-  //     defaultSQLquery,
-  //     'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10 from airdata where time > now() - 70m and "topic" = \'' +
-  //       topic +
-  //       "'",
-  //     res
-  //   );
-  // } else if (type == "all") {
-  //   matchQuery(
-  //     defaultSQLquery,
-  //     'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m and "topic" = \'' +
-  //       topic +
-  //       "'",
-  //     res
-  //   );
-  // } else {
-  //   res.status(400).send("Invalid URL Parameter.");
-  // }
+  //Search by Topic
+  if (topic && !project) {
+    if (type == "pm") {
+      matchSpecificQuery(
+        defaultSQLquery,
+        'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10 from airdata where time > now() - 70m and "topic" = \'' +
+          topic +
+          "'",
+        res
+      );
+    } else if (type == "all") {
+      matchSpecificQuery(
+        defaultSQLquery,
+        'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m and "topic" = \'' +
+          topic +
+          "'",
+        res
+      );
+    } else {
+      res.status(400).send("Invalid URL Parameter. Either pm or all");
+    }
+
+    //Search by Project
+  } else if (!topic && project) {
+    if (type == "pm") {
+      matchQuery(
+        byGroupSQLQuery(project),
+        'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10 from airdata where time > now() - 70m and "group" = \'' +
+          project +
+          "'",
+        res
+      );
+    } else if (type == "all") {
+      matchQuery(
+        byGroupSQLQuery(project),
+        'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m and "group" = \'' +
+          project +
+          "'",
+        res
+      );
+    } else {
+      res.status(400).send("Invalid URL Parameter. Either pm or all");
+    }
+  } else {
+    res.status(400).send("Invalid POST parameter. Either 'topic' or 'project'");
+  }
 });
 
 router.post("/byStation/:timeframe/:date", (req, res) => {
@@ -260,6 +284,7 @@ function matchQuery(mysqlQuery, influxQuery, res) {
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
+              //Match Same Topic
               if (firstTime) {
                 final_result[rows[i].id] = {};
                 final_result[rows[i].id].data = [];
@@ -287,6 +312,7 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == topic) {
+              //Match Specific Topic
               if (firstTime) {
                 final_result[rows[i].id] = {};
                 final_result[rows[i].id].data = [];
@@ -308,6 +334,14 @@ function byStationSQLQuery(topic) {
   return (
     "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1 AND topic = '" +
     topic +
+    "'"
+  );
+}
+
+function byGroupSQLQuery(project) {
+  return (
+    "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1 AND project = '" +
+    project +
     "'"
   );
 }
