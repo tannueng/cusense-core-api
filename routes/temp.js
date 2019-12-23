@@ -37,6 +37,7 @@ router.get("/getpttdata", (req, res) => {
   matchQuery(
     byStationSQLQuery("PTT/ptt.mainoffice"),
     "select mean(pm25) as pm25, mean(temp) as temp, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 1h and \"topic\" = 'PTT/ptt.mainoffice'",
+    "PTT/ptt.mainoffice",
     res
   );
 });
@@ -45,11 +46,12 @@ router.get("/getcudata", (req, res) => {
   matchQuery(
     byGroupSQLQuery("cusensor2"),
     "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 1h and \"group\" = 'cusensor2' group by topic",
+    "cusensor2",
     res
   );
 });
 
-function matchQuery(mysqlQuery, influxQuery, res) {
+function matchQuery(mysqlQuery, influxQuery, distinct, res) {
   pool.query(mysqlQuery, function(err, rows, fields) {
     influx
       .query(influxQuery)
@@ -60,12 +62,12 @@ function matchQuery(mysqlQuery, influxQuery, res) {
         console.log(results);
 
         if (results == "") {
-          res.send("No data for PTT/ptt.mainoffice for the last 1 hour.");
+          res.send("No data for " + distinct + " for the last 1 hour.");
         }
 
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
-            if (rows[i].topic == "PTT/ptt.mainoffice") {
+            if (rows[i].topic == distinct) {
               if (firstTime) {
                 final_result[rows[i].id] = {};
                 final_result[rows[i].id].data = [];
