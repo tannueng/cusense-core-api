@@ -92,10 +92,10 @@ function byStationSQLQuery(topic) {
   );
 }
 
-function byGroupSQLQuery(group) {
+function byGroupSQLQuery(project) {
   return (
-    "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1 AND group = '" +
-    group +
+    "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1 AND project = '" +
+    project +
     "'"
   );
 }
