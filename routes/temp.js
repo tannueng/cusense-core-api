@@ -41,6 +41,14 @@ router.get("/getpttdata", (req, res) => {
   );
 });
 
+router.get("/getcudata", (req, res) => {
+  matchQuery(
+    byGroupSQLQuery("cusensor2"),
+    "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 1h and \"group\" = 'cusensor2' group by topic",
+    res
+  );
+});
+
 function matchQuery(mysqlQuery, influxQuery, res) {
   pool.query(mysqlQuery, function(err, rows, fields) {
     influx
@@ -80,6 +88,14 @@ function byStationSQLQuery(topic) {
   return (
     "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1 AND topic = '" +
     topic +
+    "'"
+  );
+}
+
+function byGroupSQLQuery(group) {
+  return (
+    "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1 AND group = '" +
+    group +
     "'"
   );
 }
