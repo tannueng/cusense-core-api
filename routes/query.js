@@ -287,7 +287,7 @@ function matchQuery(mysqlQuery, influxQuery, res) {
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
-              //Match Same Topic
+              //Match Corresponding Topic
               if (firstTime) {
                 final_result[rows[i].id] = {};
                 final_result[rows[i].id].data = [];

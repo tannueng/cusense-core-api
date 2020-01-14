@@ -38,6 +38,20 @@ router.get("/all", (req, res) => {
     res.json(final_result);
   });
 });
+
+router.post("/", (req, res) => {
+  const project = req.body.project;
+
+  pool.query(defaultSQLquery+" AND project = '"+project+"'", function(err, rows, fields) {
+    // Connection is automatically released when query resolves
+    let final_result = {};
+    for (i = 0; i < rows.length; i++) {
+      final_result[rows[i].id] = rows[i];
+    }
+    res.json(final_result);
+  });
+});
+
 router.get("/active", (req, res) => {
   pool.query(defaultSQLquery, function(err, rows, fields) {
     // Connection is automatically released when query resolves
