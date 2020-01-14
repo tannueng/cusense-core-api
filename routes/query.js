@@ -288,11 +288,19 @@ function matchQuery(mysqlQuery, influxQuery, res) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
               if ((rows[i].topic = "cusensor2/60018440B80B")) {
-                console.log("found cusensor2/60018440B80B in rows");
+                console.log(
+                  "found cusensor2/60018440B80B in rows",
+                  rows[i].topic,
+                  i
+                );
               }
 
               if ((results[j].topic = "cusensor2/60018440B80B")) {
-                console.log("found cusensor2/60018440B80B in results");
+                console.log(
+                  "found cusensor2/60018440B80B in results",
+                  results[j].topic,
+                  j
+                );
               }
               //Match Corresponding Topic
               if (firstTime) {
