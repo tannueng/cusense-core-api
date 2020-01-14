@@ -39,11 +39,19 @@ router.get("/all", (req, res) => {
   });
 });
 
-router.post("/", (req, res) => {
+router.post("/byProject", (req, res) => {
   const project = req.body.project;
 
-  pool.query(defaultSQLquery+" AND project = '"+project+"'", function(err, rows, fields) {
+  pool.query(defaultSQLquery + " AND project IN (" + project + ")", function(
+    err,
+    rows,
+    fields
+  ) {
     // Connection is automatically released when query resolves
+    if (!results) {
+      res.status(404).send("Invalid project name.");
+    }
+
     let final_result = {};
     for (i = 0; i < rows.length; i++) {
       final_result[rows[i].id] = rows[i];
@@ -60,6 +68,7 @@ router.get("/active", (req, res) => {
         "select last(*) from airdata where time > now() - 70m group by topic"
       )
       .then(results => {
+        
         let final_result = {};
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
