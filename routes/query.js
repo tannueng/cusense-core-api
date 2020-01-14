@@ -287,7 +287,7 @@ function matchQuery(mysqlQuery, influxQuery, res) {
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
-              if ((rows[i].topic = "cusensor2/60018440B80B")) {
+              if (rows[i].topic == "cusensor2/60018440B80B") {
                 console.log(
                   "found cusensor2/60018440B80B in rows",
                   rows[i].topic,
@@ -295,7 +295,7 @@ function matchQuery(mysqlQuery, influxQuery, res) {
                 );
               }
 
-              if ((results[j].topic = "cusensor2/60018440B80B")) {
+              if (results[j].topic == "cusensor2/60018440B80B") {
                 console.log(
                   "found cusensor2/60018440B80B in results",
                   results[j].topic,
