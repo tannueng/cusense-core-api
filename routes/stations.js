@@ -49,17 +49,15 @@ router.post("/byProject", (req, res) => {
   ) {
     // Connection is automatically released when query resolves
 
-    console.log(rows);
-
     if (rows.length == 0) {
       res.status(404).send("Invalid project name.");
+    } else {
+      let final_result = {};
+      for (i = 0; i < rows.length; i++) {
+        final_result[rows[i].id] = rows[i];
+      }
+      res.json(final_result);
     }
-
-    let final_result = {};
-    for (i = 0; i < rows.length; i++) {
-      final_result[rows[i].id] = rows[i];
-    }
-    res.json(final_result);
   });
 });
 
