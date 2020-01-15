@@ -137,7 +137,7 @@ router.post("/day/:type", (req, res) => {
   const project = req.body.project;
 
   if (project && !topic) {
-    console.log(project)
+    console.log(project);
     //By Project
     if (type == "pm") {
       matchQuery(
@@ -313,6 +313,8 @@ function matchQuery(mysqlQuery, influxQuery, res) {
     influx
       .query(influxQuery)
       .then(results => {
+        console.log(rows);
+        console.log(results);
         let final_result = {};
         let firstTime = true;
         for (i = 0; i < rows.length; i++) {
