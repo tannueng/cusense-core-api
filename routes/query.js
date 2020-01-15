@@ -144,7 +144,7 @@ router.post("/day/:type", (req, res) => {
         byProjectSQLQuery(project),
         'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h and "group" = \'' +
           project +
-          "'",
+          "' group by topic",
         res
       );
     } else if (type == "all") {
@@ -152,7 +152,7 @@ router.post("/day/:type", (req, res) => {
         byProjectSQLQuery(project),
         'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 24h and "group" = \'' +
           project +
-          "'",
+          "' group by topic",
         res
       );
     } else {
@@ -320,6 +320,7 @@ function matchQuery(mysqlQuery, influxQuery, res) {
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
+              console.log("match : ", rows[i].topic, results[j].topic);
               //Match Corresponding Topic
               if (firstTime) {
                 final_result[rows[i].id] = {};
