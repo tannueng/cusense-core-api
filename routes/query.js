@@ -135,13 +135,13 @@ router.post("/day/:type", (req, res) => {
   const type = req.params.type;
   const topic = req.body.topic;
   const project = req.body.project;
-  
+
   if (project && !topic) {
     //By Project
     if (type == "pm") {
       matchQuery(
         byProjectSQLQuery(project),
-        'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h and "project" = \'' +
+        'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h and "group" = \'' +
           project +
           "'",
         res
@@ -149,10 +149,10 @@ router.post("/day/:type", (req, res) => {
     } else if (type == "all") {
       matchQuery(
         byProjectSQLQuery(project),
-        'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 24h and "project" = \'' +
+        'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 24h and "group" = \'' +
           project +
           "'",
-          res
+        res
       );
     } else {
       res.status(400).send("Invalid URL Parameter. Either pm or all");
@@ -183,7 +183,6 @@ router.post("/day/:type", (req, res) => {
   } else {
     res.status(400).send("Invalid POST parameter. Either 'topic' or 'project'");
   }
-  
 });
 
 router.get("/realtime/:type", (req, res) => {
