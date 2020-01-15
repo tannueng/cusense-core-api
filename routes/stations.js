@@ -42,12 +42,15 @@ router.get("/all", (req, res) => {
 router.post("/byProject", (req, res) => {
   const project = req.body.project;
 
-  pool.query(defaultSQLquery + " AND project IN (" + project + ")", function(
+  pool.query(defaultSQLquery + " AND project IN ('" + project + "')", function(
     err,
     rows,
     fields
   ) {
     // Connection is automatically released when query resolves
+
+    console.log(rows)
+
     if (!rows) {
       res.status(404).send("Invalid project name.");
     }
