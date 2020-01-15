@@ -1,13 +1,25 @@
 const express = require("express");
+// const https = require("https");
+// const fs = require("fs");
 const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+
+// const port = 3333;
 
 //Import Routes
 const stationRoute = require("./routes/stations");
 const queryRoute = require("./routes/query");
 const authRoute = require("./routes/auth");
-const tempRoute = require("./routes/temp")
+const tempRoute = require("./routes/temp");
+
+//HTTPS
+// var key = fs.readFileSync(__dirname + "/../certs/selfsigned.key");
+// var cert = fs.readFileSync(__dirname + "/../certs/selfsigned.crt");
+// var options = {
+//   key: key,
+//   cert: cert
+// };
 
 dotenv.config();
 
@@ -33,7 +45,14 @@ app.use("/api/v1/users", authRoute);
 
 app.use("/api/", tempRoute);
 
-// localhost:3333
+localhost: 3333;
 app.listen(3333, () => {
   console.log("Server is up and listening on 3333...");
 });
+
+//HTTPS Server
+// var server = https.createServer(options, app);
+
+// server.listen(port, () => {
+//   console.log("server starting on port : " + port);
+// });
