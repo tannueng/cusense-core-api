@@ -48,8 +48,6 @@ router.post("/byProject", (req, res) => {
     fields
   ) {
     // Connection is automatically released when query resolves
-
-    console.log(rows.length);
     if (rows.length == 0) {
       res.status(404).send("Invalid project name.");
     } else {
