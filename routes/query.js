@@ -313,14 +313,14 @@ function matchQuery(mysqlQuery, influxQuery, res) {
     influx
       .query(influxQuery)
       .then(results => {
-        console.log(rows);
-        console.log(results);
+        // console.log(rows);
+        // console.log(results);
         let final_result = {};
         let firstTime = true;
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
-              console.log("match : ", rows[i].topic, results[j].topic);
+              // console.log("match : ", rows[i].topic, results[j].topic);
               //Match Corresponding Topic
               if (firstTime) {
                 final_result[rows[i].id] = {};
