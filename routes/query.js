@@ -137,6 +137,7 @@ router.post("/day/:type", (req, res) => {
   const project = req.body.project;
 
   if (project && !topic) {
+    console.log(project)
     //By Project
     if (type == "pm") {
       matchQuery(
