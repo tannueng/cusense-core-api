@@ -135,11 +135,33 @@ router.post("/day/:type", (req, res) => {
   const type = req.params.type;
   const topic = req.body.topic;
   const project = req.body.project;
-
-  if (project) {
+  
+  if (project && !topic) {
+    //By Project
+    if (type == "pm") {
+      matchQuery(
+        byProjectSQLQuery(project),
+        'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h and "project" = \'' +
+          project +
+          "'",
+        res
+      );
+    } else if (type == "all") {
+      matchQuery(
+        byProjectSQLQuery(project),
+        'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 24h and "project" = \'' +
+          project +
+          "'",
+          res
+      );
+    } else {
+      res.status(400).send("Invalid URL Parameter. Either pm or all");
+    }
+  } else if (!project && topic) {
+    //By topic
     if (type == "pm") {
       matchSpecificQuery(
-        byProjectSQLQuery(project),
+        byStationSQLQuery(topic),
         'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h and "topic" = \'' +
           topic +
           "'",
@@ -147,8 +169,8 @@ router.post("/day/:type", (req, res) => {
         res
       );
     } else if (type == "all") {
-      byProjectSQLQuery(
-        byStationSQLQuery(project),
+      matchSpecificQuery(
+        byStationSQLQuery(topic),
         'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 24h and "topic" = \'' +
           topic +
           "'",
@@ -156,31 +178,12 @@ router.post("/day/:type", (req, res) => {
         res
       );
     } else {
-      res.status(400).send("Invalid URL Parameter.");
+      res.status(400).send("Invalid URL Parameter. Either pm or all");
     }
   } else {
-    if (type == "pm") {
-      matchSpecificQuery(
-        byStationSQLQuery(topic),
-        'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h and "topic" = \'' +
-          topic +
-          "'",
-        topic,
-        res
-      );
-    } else if (type == "all") {
-      matchSpecificQuery(
-        byStationSQLQuery(topic),
-        'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 24h and "topic" = \'' +
-          topic +
-          "'",
-        topic,
-        res
-      );
-    } else {
-      res.status(400).send("Invalid URL Parameter.");
-    }
+    res.status(400).send("Invalid POST parameter. Either 'topic' or 'project'");
   }
+  
 });
 
 router.get("/realtime/:type", (req, res) => {
@@ -198,7 +201,7 @@ router.get("/realtime/:type", (req, res) => {
       res
     );
   } else {
-    res.status(400).send("Invalid URL Parameter.");
+    res.status(400).send("Invalid URL Parameter. Either pm or all");
   }
 });
 
@@ -302,6 +305,8 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
     res.status(400).send("Invalid URL Parameter.");
   }
 });
+
+//********************************************** */
 
 function matchQuery(mysqlQuery, influxQuery, res) {
   pool.query(mysqlQuery, function(err, rows, fields) {
