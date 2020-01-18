@@ -137,7 +137,6 @@ router.post("/day/:type", (req, res) => {
   const project = req.body.project;
 
   if (project && !topic) {
-    console.log(project);
     //By Project
     if (type == "pm") {
       matchQuery(
@@ -191,13 +190,13 @@ router.get("/realtime/:type", (req, res) => {
   if (type == "pm") {
     matchQuery(
       defaultSQLquery,
-      "select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10 from airdata where time > now() - 70m group by topic",
+      "select pm1, pm25, pm10 from airdata where time > now() - 70m group by topic order by time desc limit 1",
       res
     );
   } else if (type == "all") {
     matchQuery(
       defaultSQLquery,
-      "select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m group by topic",
+      "select pm1, pm25, pm10, temp, co2, humid from airdata where time > now() - 70m group by topic order by time desc limit 1",
       res
     );
   } else {
@@ -216,18 +215,18 @@ router.post("/realtime/:type", (req, res) => {
     if (type == "pm") {
       matchSpecificQuery(
         byStationSQLQuery(topic),
-        'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10 from airdata where time > now() - 70m and "topic" = \'' +
+        'select pm1, pm25, pm10 from airdata where time > now() - 70m and "topic" = \'' +
           topic +
-          "'",
+          "' order by time desc limit 1",
         topic,
         res
       );
     } else if (type == "all") {
       matchSpecificQuery(
         byStationSQLQuery(topic),
-        'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m and "topic" = \'' +
+        'select pm1, pm25, pm10, temp, co2, humid from airdata where time > now() - 70m and "topic" = \'' +
           topic +
-          "'",
+          "' order by time desc limit 1",
         topic,
         res
       );
@@ -240,17 +239,17 @@ router.post("/realtime/:type", (req, res) => {
     if (type == "pm") {
       matchQuery(
         byProjectSQLQuery(project),
-        'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10 from airdata where time > now() - 70m and "group" = \'' +
+        'select pm1, pm25, pm10 from airdata where time > now() - 70m and "group" = \'' +
           project +
-          "' group by topic",
+          "' order by time desc limit 1 group by topic ",
         res
       );
     } else if (type == "all") {
       matchQuery(
         byProjectSQLQuery(project),
-        'select last(pm1) as pm1, last(pm25) as pm25, last(pm10) as pm10, last(temp) as temp, last(co2) as co2, last(humid) as humid, last(temp) as temp from airdata where time > now() - 70m and "group" = \'' +
+        'select pm1, pm25, pm10, temp, co2, humid from airdata where time > now() - 70m and "group" = \'' +
           project +
-          "' group by topic",
+          "' order by time desc limit 1 group by topic",
         res
       );
     } else {
@@ -316,7 +315,7 @@ function matchQuery(mysqlQuery, influxQuery, res) {
         // console.log(rows);
         // console.log(results);
         if (rows.length == 0) {
-          res.status(400).send("Invalid 'project' input.");
+          res.status(404).send("Invalid 'project' input.");
         } else {
           let final_result = {};
           let firstTime = true;
@@ -349,7 +348,7 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
       .query(influxQuery)
       .then(results => {
         if (rows.length == 0) {
-          res.status(400).send("Invalid 'topic' input.");
+          res.status(404).send("Invalid 'topic' input.");
         } else {
           let final_result = {};
           let firstTime = true;
