@@ -58,8 +58,8 @@ function matchQuery(mysqlQuery, influxQuery, distinct, res) {
       .then(results => {
         let final_result = {};
         let firstTime = true;
-        console.log(rows);
-        console.log(results);
+        // console.log(rows);
+        // console.log(results);
 
         if (results == "") {
           res.send("No data for " + distinct + " for the last 1 hour.");
@@ -93,8 +93,8 @@ function matchMultipleQuery(mysqlQuery, influxQuery, distinct, res) {
       .then(results => {
         let final_result = {};
         let firstTime = true;
-        console.log(rows);
-        console.log(results);
+        // console.log(rows);
+        // console.log(results);
 
         if (results == "") {
           res.send("No data for " + distinct + " for the last 1 hour.");

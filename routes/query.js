@@ -84,12 +84,12 @@ router.get("/active", (req, res) => {
     fields
   ) {
     // Connection is automatically released when query resolves
-    console.log("Station data received from SQL");
+    // console.log("Station data received from SQL");
     influx
       .query("select mean(*) from airdata group by topic")
       .then(results => {
         // console.log(results);
-        console.log("before loop");
+        // console.log("before loop");
         let final_result = {};
         for (i = 0; i < rows.length; i++) {
           for (j = 0; j < results.length; j++) {
@@ -105,7 +105,7 @@ router.get("/active", (req, res) => {
           }
           // console.log("in loop i=" + i);
         }
-        console.log("after loop");
+        // console.log("after loop");
         res.json(final_result);
       })
       .catch(console.error);
@@ -265,7 +265,7 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
   const date = req.params.date;
   const topic = req.body.topic;
 
-  console.log(timeframe, date, topic);
+  // console.log(timeframe, date, topic);
 
   if (timeframe == "monthly") {
     const { error } = monthValidation(date);
