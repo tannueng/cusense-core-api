@@ -34,6 +34,7 @@ mongoose.connect(
 
 //Middleware
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
   console.log("Responding to root route");
