@@ -39,9 +39,9 @@ app.get("/", (req, res) => {
 });
 
 //Route Middleware
-app.use("/api/v1/stationInfo", stationRoute);
-app.use("/api/v1/sensorData", queryRoute);
-app.use("/api/v1/users", authRoute);
+app.use("/v1/stationInfo", stationRoute);
+app.use("/v1/sensorData", queryRoute);
+app.use("/v1/users", authRoute);
 
 app.use("/api/", tempRoute);
 
