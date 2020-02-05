@@ -32,7 +32,7 @@ mongoose.connect(
   () => console.log("Connected to DB")
 );
 const config = {
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000','http://161.200.80.206:8082'],
   maxAge:3600
 }
 
