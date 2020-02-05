@@ -31,10 +31,14 @@ mongoose.connect(
   { useNewUrlParser: true, useUnifiedTopology: true },
   () => console.log("Connected to DB")
 );
+const config = {
+  origin: 'http://localhost:3000',
+  maxAge:3600
+}
 
 //Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors(config));
 
 app.get("/", (req, res) => {
   console.log("Responding to root route");
@@ -44,7 +48,7 @@ app.get("/", (req, res) => {
 //Route Middleware
 app.use("/api/v1/stationInfo", stationRoute);
 app.use("/api/v1/manageStations", manageStationsRoute);
-app.use("/api/v1/sensorData", cors(), queryRoute);
+app.use("/api/v1/sensorData", cors(config), queryRoute);
 app.use("/api/v1/users", authRoute);
 
 app.use("/api/", tempRoute);
