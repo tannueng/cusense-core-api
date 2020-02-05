@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const cors = require('cors')
 
 // const port = 3333;
 
@@ -42,7 +43,7 @@ app.get("/", (req, res) => {
 //Route Middleware
 app.use("/api/v1/stationInfo", stationRoute);
 app.use("/api/v1/manageStations", manageStationsRoute);
-app.use("/api/v1/sensorData", queryRoute);
+app.use("/api/v1/sensorData", cors(), queryRoute);
 app.use("/api/v1/users", authRoute);
 
 app.use("/api/", tempRoute);
