@@ -190,13 +190,13 @@ router.get("/realtime/:type", (req, res) => {
   if (type == "pm") {
     matchQuery(
       defaultSQLquery,
-      "select pm1, pm25, pm10 from airdata where time > now() - 70m group by topic order by time desc limit 1",
+      "select pm1, pm25, pm10 from airdata where time > now() - 3h group by topic order by time desc limit 1",
       res
     );
   } else if (type == "all") {
     matchQuery(
       defaultSQLquery,
-      "select pm1, pm25, pm10, temp, co2, humid from airdata where time > now() - 70m group by topic order by time desc limit 1",
+      "select pm1, pm25, pm10, temp, co2, humid from airdata where time > now() - 3h group by topic order by time desc limit 1",
       res
     );
   } else {
@@ -215,7 +215,7 @@ router.post("/realtime/:type", (req, res) => {
     if (type == "pm") {
       matchSpecificQuery(
         byStationSQLQuery(topic),
-        'select pm1, pm25, pm10 from airdata where time > now() - 70m and "topic" = \'' +
+        'select pm1, pm25, pm10 from airdata where time > now() - 3h and "topic" = \'' +
           topic +
           "' order by time desc limit 1",
         topic,
@@ -224,7 +224,7 @@ router.post("/realtime/:type", (req, res) => {
     } else if (type == "all") {
       matchSpecificQuery(
         byStationSQLQuery(topic),
-        'select pm1, pm25, pm10, temp, co2, humid from airdata where time > now() - 70m and "topic" = \'' +
+        'select pm1, pm25, pm10, temp, co2, humid from airdata where time > now() - 3h and "topic" = \'' +
           topic +
           "' order by time desc limit 1",
         topic,
@@ -239,7 +239,7 @@ router.post("/realtime/:type", (req, res) => {
     if (type == "pm") {
       matchQuery(
         byProjectSQLQuery(project),
-        'select pm1, pm25, pm10 from airdata where time > now() - 70m and "group" = \'' +
+        'select pm1, pm25, pm10 from airdata where time > now() - 3h and "group" = \'' +
           project +
           "' order by time desc limit 1 group by topic ",
         res
@@ -247,7 +247,7 @@ router.post("/realtime/:type", (req, res) => {
     } else if (type == "all") {
       matchQuery(
         byProjectSQLQuery(project),
-        'select pm1, pm25, pm10, temp, co2, humid from airdata where time > now() - 70m and "group" = \'' +
+        'select pm1, pm25, pm10, temp, co2, humid from airdata where time > now() - 3h and "group" = \'' +
           project +
           "' order by time desc limit 1 group by topic",
         res
