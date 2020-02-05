@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 
 //Import Routes
 const stationRoute = require("./routes/stations");
+const manageStationsRoute = require("./routes/manageStations");
 const queryRoute = require("./routes/query");
 const authRoute = require("./routes/auth");
 const tempRoute = require("./routes/temp");
@@ -39,9 +40,10 @@ app.get("/", (req, res) => {
 });
 
 //Route Middleware
-app.use("/v1/stationInfo", stationRoute);
-app.use("/v1/sensorData", queryRoute);
-app.use("/v1/users", authRoute);
+app.use("/api/v1/stationInfo", stationRoute);
+app.use("/api/v1/manageStations", manageStationsRoute);
+app.use("/api/v1/sensorData", queryRoute);
+app.use("/api/v1/users", authRoute);
 
 app.use("/api/", tempRoute);
 
