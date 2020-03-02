@@ -329,6 +329,19 @@ function matchQuery(mysqlQuery, influxQuery, res) {
                   final_result[rows[i].id] = {};
                   final_result[rows[i].id].data = [];
                 }
+
+                if (results[j].pm1 != null)
+                  results[j].pm1 = parseInt(results[j].pm1, 10);
+                if (results[j].pm25 != null)
+                  results[j].pm25 = parseInt(results[j].pm25, 10);
+                if (results[j].pm10 != null)
+                  results[j].pm10 = parseInt(results[j].pm10, 10);
+                if (results[j].humid != null)
+                  results[j].humid = parseInt(results[j].humid, 10);
+
+                if (results[j].temp != null)
+                  results[j].temp = number(results[j].temp, 10).toFixed(1);
+
                 final_result[rows[i].id].data.push(results[j]);
                 final_result[rows[i].id].info = rows[i];
                 firstTime = false;
@@ -361,6 +374,19 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
                   final_result[rows[i].id] = {};
                   final_result[rows[i].id].data = [];
                 }
+
+                if (results[j].pm1 != null)
+                  results[j].pm1 = parseInt(results[j].pm1, 10);
+                if (results[j].pm25 != null)
+                  results[j].pm25 = parseInt(results[j].pm25, 10);
+                if (results[j].pm10 != null)
+                  results[j].pm10 = parseInt(results[j].pm10, 10);
+                if (results[j].humid != null)
+                  results[j].humid = parseInt(results[j].humid, 10);
+
+                if (results[j].temp != null)
+                  results[j].temp = number(results[j].temp, 10).toFixed(1);
+
                 final_result[rows[i].id].data.push(results[j]);
                 final_result[rows[i].id].info = rows[i];
                 firstTime = false;
