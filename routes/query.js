@@ -196,7 +196,8 @@ router.get("/realtime/:type", (req, res) => {
   } else if (type == "all") {
     matchQuery(
       defaultSQLquery,
-      "select pm1, pm25, pm10, temp, co2, humid from airdata where time > now() - 3h group by topic order by time desc limit 1",
+      // "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid from airdata where time > now() - 3h group by time(1h), topic order by time desc limit 1",
+      "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid from airdata where time > now() - 3h group by time(1h), topic fill(none) order by time desc limit 1",
       res
     );
   } else {
