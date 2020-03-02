@@ -387,7 +387,9 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
                   results[j].humid = parseInt(results[j].humid, 10);
 
                 if (results[j].temp != null)
-                  results[j].temp = number(results[j].temp, 10).toFixed(1);
+                  results[j].temp = Number(
+                    parseFloat(results[j].temp).toFixed(1)
+                  );
 
                 final_result[rows[i].id].data.push(results[j]);
                 final_result[rows[i].id].info = rows[i];
