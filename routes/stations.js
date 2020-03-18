@@ -230,9 +230,9 @@ router.post("/add", (req, res) => {
 
   connection.execute(
     "INSERT INTO station (",
-    availField.replace(/,\s*$/, ""),
+    "stationid,id,topic,isoutdoor,lat,lon,country,project,name,abstract,sta_addr,tambol,amphoe,province,remark,org,org_per,org_email",
     ") VALUES (",
-    availFieldDump.replace(/,\s*$/, ""),
+    "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?",
     ")",
     availInput,
     function(err, results, fields) {
