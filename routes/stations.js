@@ -183,22 +183,25 @@ router.post("/add", (req, res) => {
   };
 
   var availField = "";
+  var availFieldDump = "";
   var availInput = [];
 
   for (var fff in field) {
     if (field[fff]) {
       availField += fff + ",";
+      availFieldDump += "?,";
       availInput.push(field[fff]);
     }
   }
-  // console.log(availField.replace(/,\s*$/, ""));
-  // console.log(availInput);
+  console.log(availField.replace(/,\s*$/, ""));
+  console.log(availFieldDump.replace(/,\s*$/, ""));
+  console.log(availInput);
 
   connection.execute(
     "INSERT INTO station (",
-    availField,
+    availField.replace(/,\s*$/, ""),
     ") VALUES (",
-    field,
+    availFieldDump.replace(/,\s*$/, ""),
     ")",
     availInput,
     function(err, results, fields) {
