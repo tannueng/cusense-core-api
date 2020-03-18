@@ -197,59 +197,25 @@ router.post("/add", (req, res) => {
   console.log(availFieldDump.replace(/,\s*$/, ""));
   console.log(availInput);
 
-  connection.execute(
-    "INSERT INTO station (",
-    availField.replace(/,\s*$/, ""),
-    ") VALUES (",
-    availFieldDump.replace(/,\s*$/, ""),
-    ")",
-    [
-      "req.body.sensorid",
-      "req.body.id",
-      "req.body.sensorid",
-      "req.body.isoutdoor",
-      "req.body.lat",
-      "req.body.lon",
-      "req.body.country",
-      "req.body.name",
-      "req.body.sta_addr",
-      "req.body.amphoe",
-      "req.body.org",
-      "req.body.org_addr"
-    ],
-    function(err, results, fields) {
-      console.log(results); // results contains rows returned by server
-      console.log(fields); // fields contains extra meta data about results, if available
-      res.json("Sucessfully Added");
-
-      // If you execute same statement again, it will be picked from a LRU cache
-      // which will save query preparation time and give better performance
-    }
-  );
-
   // connection.execute(
-  //   "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country,project, name, abstract, sta_addr, tambol,  amphoe, province, remark, org, org_per, org_email, org_tel, org_addr ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+  //   "INSERT INTO station (",
+  //   availField.replace(/,\s*$/, ""),
+  //   ") VALUES (",
+  //   availFieldDump.replace(/,\s*$/, ""),
+  //   ")",
   //   [
-  //     stationid,
-  //     id,
-  //     topic,
-  //     isoutdoor,
-  //     lat,
-  //     lon,
-  //     country,
-  //     project,
-  //     name,
-  //     abstract,
-  //     sta_addr,
-  //     tambol,
-  //     amphoe,
-  //     province,
-  //     remark,
-  //     org,
-  //     org_per,
-  //     org_email,
-  //     org_tel,
-  //     org_addr
+  //     "req.body.sensorid",
+  //     "req.body.id",
+  //     "req.body.sensorid",
+  //     "req.body.isoutdoor",
+  //     "req.body.lat",
+  //     "req.body.lon",
+  //     "req.body.country",
+  //     "req.body.name",
+  //     "req.body.sta_addr",
+  //     "req.body.amphoe",
+  //     "req.body.org",
+  //     "req.body.org_addr"
   //   ],
   //   function(err, results, fields) {
   //     console.log(results); // results contains rows returned by server
@@ -260,6 +226,40 @@ router.post("/add", (req, res) => {
   //     // which will save query preparation time and give better performance
   //   }
   // );
+
+  connection.execute(
+    "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country,project, name, abstract, sta_addr, tambol,  amphoe, province, remark, org, org_per, org_email, org_tel, org_addr ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    [
+      "req.body.sensorid",
+      id,
+      topic,
+      isoutdoor,
+      lat,
+      lon,
+      country,
+      project,
+      name,
+      abstract,
+      sta_addr,
+      tambol,
+      amphoe,
+      province,
+      remark,
+      org,
+      org_per,
+      org_email,
+      org_tel,
+      org_addr
+    ],
+    function(err, results, fields) {
+      console.log(results); // results contains rows returned by server
+      console.log(fields); // fields contains extra meta data about results, if available
+      res.json("Sucessfully Added");
+
+      // If you execute same statement again, it will be picked from a LRU cache
+      // which will save query preparation time and give better performance
+    }
+  );
 });
 
 module.exports = router;
