@@ -98,6 +98,22 @@ router.post("/add", (req, res) => {
   const lon = req.body.lon;
   const country = req.body.country;
 
+  const project = req.body.project;
+  const name = req.body.name;
+  const abstract = req.body.abstract;
+  const sta_addr = req.body.sta_addr;
+  const tambol = req.body.tambol;
+  const amphoe = req.body.amphoe;
+  const province = req.body.province;
+
+  const remark = req.body.remark;
+
+  const org = req.body.org;
+  const org_per = req.body.org_per;
+  const org_email = req.body.org_email;
+  const org_tel = req.body.org_tel;
+  const org_addr = req.body.org_addr;
+
   if (!stationid || !id || !topic || !isoutdoor || !lat || !lon || !country)
     res.status(400).json("Some field is missing");
   // pool.query("INSERT INTO `station`(`stationid`, `id`, `topic`, `project`, `name`, `abstract`, `lat`, `lon`, `sta_addr`, `tambol`, `amphoe`, `province`, `country`, `remark`, `org`, `org_per`, `org_email`, `org_tel`, `org_addr`, `publish`, `date_create`, `date_update`) VALUES ([value-1],[value-2],[value-3],[value-4],[value-5],[value-6],[value-7],[value-8],[value-9],[value-10],[value-11],[value-12],[value-13],[value-14],[value-15],[value-16],[value-17],[value-18],[value-19],[value-20],[value-21],[value-22])", function(err, rows, fields) {
@@ -109,19 +125,39 @@ router.post("/add", (req, res) => {
   //   }
   // );
 
-  connection
-    .execute(
-      "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [stationid, id, topic, isoutdoor, lat, lon, country],
-      function(err, results, fields) {
-        console.log(results); // results contains rows returned by server
-        console.log(fields); // fields contains extra meta data about results, if available
-        res.json("Sucessfully Added");
+  connection.execute(
+    "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country,project, name, abstract, sta_addr, tambol,  amphoe, province, remark, org, org_per, org_email, org_tel, org_addr ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    [
+      stationid,
+      id,
+      topic,
+      isoutdoor,
+      lat,
+      lon,
+      country,
+      project,
+      name,
+      abstract,
+      sta_addr,
+      tambol,
+      amphoe,
+      province,
+      remark,
+      org,
+      org_per,
+      org_email,
+      org_tel,
+      org_addr
+    ],
+    function(err, results, fields) {
+      console.log(results); // results contains rows returned by server
+      console.log(fields); // fields contains extra meta data about results, if available
+      res.json("Sucessfully Added");
 
-        // If you execute same statement again, it will be picked from a LRU cache
-        // which will save query preparation time and give better performance
-      }
-    )
+      // If you execute same statement again, it will be picked from a LRU cache
+      // which will save query preparation time and give better performance
+    }
+  );
 });
 
 module.exports = router;
