@@ -229,31 +229,12 @@ router.post("/add", (req, res) => {
   console.log(availInput);
 
   connection.execute(
-    "INSERT INTO station (",
-    "stationid,id,topic,isoutdoor,lat,lon,country,project,name,abstract,sta_addr,tambol,amphoe,province,remark,org,org_per,org_email",
-    ") VALUES (",
-    "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?",
-    ")",
-    [
-      stationid,
-      id,
-      topic,
-      isoutdoor,
-      lat,
-      lon,
-      country,
-      project,
-      name,
-      abstract,
-      sta_addr,
-      tambol,
-      amphoe,
-      province,
-      remark,
-      org,
-      org_per,
-      org_email
-    ],
+    "INSERT INTO station (" +
+      availField.replace(/,\s*$/, "") +
+      ") VALUES (" +
+      availFieldDump.replace(/,\s*$/, "") +
+      ")",
+    availInput,
     function(err, results, fields) {
       console.log(results); // results contains rows returned by server
       console.log(fields); // fields contains extra meta data about results, if available
