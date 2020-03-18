@@ -122,9 +122,6 @@ router.post("/add", (req, res) => {
         // which will save query preparation time and give better performance
       }
     )
-    .catch(error => {
-      res.status(400).json(error);
-    });
 });
 
 module.exports = router;
