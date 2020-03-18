@@ -91,7 +91,8 @@ router.post("/add", (req, res) => {
   const lon = req.body.lon;
   const country = req.body.country;
 
-  if (!sensorid) res.status(400);
+  if (!stationid || !id || !topic || !isoutdoor || !lat || !lon || !country)
+    res.status(400).json("Some field is missing");
   // pool.query("INSERT INTO `station`(`stationid`, `id`, `topic`, `project`, `name`, `abstract`, `lat`, `lon`, `sta_addr`, `tambol`, `amphoe`, `province`, `country`, `remark`, `org`, `org_per`, `org_email`, `org_tel`, `org_addr`, `publish`, `date_create`, `date_update`) VALUES ([value-1],[value-2],[value-3],[value-4],[value-5],[value-6],[value-7],[value-8],[value-9],[value-10],[value-11],[value-12],[value-13],[value-14],[value-15],[value-16],[value-17],[value-18],[value-19],[value-20],[value-21],[value-22])", function(err, rows, fields) {
   // pool.query(
   //   "INSERT INTO station (`stationid`, `id`,`topic`,`isoutdoor`,`lat`,`lon`,`country`) VALUES ('test/testid','testid','test','1','10','14','thailand');",
