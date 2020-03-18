@@ -229,12 +229,16 @@ router.post("/add", (req, res) => {
   console.log(availInput);
 
   connection.execute(
-    "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country,project, name, abstract, sta_addr, tambol,  amphoe, province, remark, org, org_per, org_email, org_tel, org_addr ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO station (",
+    availField.replace(/,\s*$/, ""),
+    ") VALUES (",
+    availFieldDump.replace(/,\s*$/, ""),
+    ")",
     availInput,
     function(err, results, fields) {
       console.log(results); // results contains rows returned by server
       console.log(fields); // fields contains extra meta data about results, if available
-      res.json("Sucessfully Added");
+      res.json(results);
 
       // If you execute same statement again, it will be picked from a LRU cache
       // which will save query preparation time and give better performance
