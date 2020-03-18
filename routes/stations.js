@@ -109,17 +109,22 @@ router.post("/add", (req, res) => {
   //   }
   // );
 
-  connection.execute(
-    "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country) VALUES (?, ?, ?, ?, ?, ?, ?)",
-    [stationid, id, topic, isoutdoor, lat, lon, country],
-    function(err, results, fields) {
-      console.log(results); // results contains rows returned by server
-      console.log(fields); // fields contains extra meta data about results, if available
+  connection
+    .execute(
+      "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [stationid, id, topic, isoutdoor, lat, lon, country],
+      function(err, results, fields) {
+        console.log(results); // results contains rows returned by server
+        console.log(fields); // fields contains extra meta data about results, if available
+        res.json("Sucessfully Added");
 
-      // If you execute same statement again, it will be picked from a LRU cache
-      // which will save query preparation time and give better performance
-    }
-  );
+        // If you execute same statement again, it will be picked from a LRU cache
+        // which will save query preparation time and give better performance
+      }
+    )
+    .catch(error => {
+      res.status(400).json(error);
+    });
 });
 
 module.exports = router;
