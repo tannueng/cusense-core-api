@@ -124,31 +124,83 @@ router.post("/add", (req, res) => {
   //     res.json(rows);
   //   }
   // );
+  // connection.execute(
+  //     "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country,project, name, abstract, sta_addr, tambol,  amphoe, province, remark, org, org_per, org_email, org_tel, org_addr ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+  //     [
+  //       stationid,
+  //       id,
+  //       topic,
+  //       isoutdoor,
+  //       lat,
+  //       lon,
+  //       country,
+  //       project,
+  //       name,
+  //       abstract,
+  //       sta_addr,
+  //       tambol,
+  //       amphoe,
+  //       province,
+  //       remark,
+  //       org,
+  //       org_per,
+  //       org_email,
+  //       org_tel,
+  //       org_addr
+  //     ],
+  //     function(err, results, fields) {
+  //       console.log(results); // results contains rows returned by server
+  //       console.log(fields); // fields contains extra meta data about results, if available
+  //       res.json("Sucessfully Added");
+
+  //       // If you execute same statement again, it will be picked from a LRU cache
+  //       // which will save query preparation time and give better performance
+  //     }
+  //   );
+  const field = {
+    stationid: stationid,
+    id: id,
+    topic: topic,
+    isoutdoor: isoutdoor,
+    lat: lat,
+    lon: lon,
+    country: country,
+    project: project,
+    name: name,
+    abstract: abstract,
+    sta_addr: sta_addr,
+    tambol: tambol,
+    amphoe: amphoe,
+    province: province,
+
+    remark: remark,
+
+    org: org,
+    org_per: org_per,
+    org_email: org_email,
+    org_tel: org_tel,
+    org_addr: org_addr
+  };
+
+  var availField = "";
+  var availInput = [];
+
+  for (var fff in field) {
+    if (field[fff]) {
+      availField += fff + ",";
+      availInput.push(field[fff]);
+    }
+  }
+  // console.log(availField.replace(/,\s*$/, ""));
+  // console.log(availInput);
 
   connection.execute(
-    "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country,project, name, abstract, sta_addr, tambol,  amphoe, province, remark, org, org_per, org_email, org_tel, org_addr ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-    [
-      stationid,
-      id,
-      topic,
-      isoutdoor,
-      lat,
-      lon,
-      country,
-      project,
-      name,
-      abstract,
-      sta_addr,
-      tambol,
-      amphoe,
-      province,
-      remark,
-      org,
-      org_per,
-      org_email,
-      org_tel,
-      org_addr
-    ],
+    "INSERT INTO station (",
+    availField,
+    ") VALUES (",
+    field,
+    ")",
+    availInput,
     function(err, results, fields) {
       console.log(results); // results contains rows returned by server
       console.log(fields); // fields contains extra meta data about results, if available
@@ -158,6 +210,40 @@ router.post("/add", (req, res) => {
       // which will save query preparation time and give better performance
     }
   );
+
+  // connection.execute(
+  //   "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country,project, name, abstract, sta_addr, tambol,  amphoe, province, remark, org, org_per, org_email, org_tel, org_addr ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+  //   [
+  //     stationid,
+  //     id,
+  //     topic,
+  //     isoutdoor,
+  //     lat,
+  //     lon,
+  //     country,
+  //     project,
+  //     name,
+  //     abstract,
+  //     sta_addr,
+  //     tambol,
+  //     amphoe,
+  //     province,
+  //     remark,
+  //     org,
+  //     org_per,
+  //     org_email,
+  //     org_tel,
+  //     org_addr
+  //   ],
+  //   function(err, results, fields) {
+  //     console.log(results); // results contains rows returned by server
+  //     console.log(fields); // fields contains extra meta data about results, if available
+  //     res.json("Sucessfully Added");
+
+  //     // If you execute same statement again, it will be picked from a LRU cache
+  //     // which will save query preparation time and give better performance
+  //   }
+  // );
 });
 
 module.exports = router;
