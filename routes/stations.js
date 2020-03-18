@@ -203,7 +203,20 @@ router.post("/add", (req, res) => {
     ") VALUES (",
     availFieldDump.replace(/,\s*$/, ""),
     ")",
-    availInput,
+    [
+      "req.body.sensorid",
+      "req.body.id",
+      "req.body.sensorid",
+      "req.body.isoutdoor",
+      "req.body.lat",
+      "req.body.lon",
+      "req.body.country",
+      "req.body.name",
+      "req.body.sta_addr",
+      "req.body.amphoe",
+      "req.body.org",
+      "req.body.org_addr"
+    ],
     function(err, results, fields) {
       console.log(results); // results contains rows returned by server
       console.log(fields); // fields contains extra meta data about results, if available
