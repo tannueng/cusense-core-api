@@ -193,9 +193,6 @@ router.post("/add", (req, res) => {
       availInput.push(field[fff]);
     }
   }
-  console.log(availField.replace(/,\s*$/, ""));
-  console.log(availFieldDump.replace(/,\s*$/, ""));
-  console.log(availInput);
 
   // connection.execute(
   //   "INSERT INTO station (",
@@ -227,30 +224,13 @@ router.post("/add", (req, res) => {
   //   }
   // );
 
+  console.log(availField.replace(/,\s*$/, ""));
+  console.log(availFieldDump.replace(/,\s*$/, ""));
+  console.log(availInput);
+
   connection.execute(
     "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country,project, name, abstract, sta_addr, tambol,  amphoe, province, remark, org, org_per, org_email, org_tel, org_addr ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-    [
-      "req.body.sensorid",
-      id,
-      topic,
-      isoutdoor,
-      lat,
-      lon,
-      country,
-      project,
-      name,
-      abstract,
-      sta_addr,
-      tambol,
-      amphoe,
-      province,
-      remark,
-      org,
-      org_per,
-      org_email,
-      org_tel,
-      org_addr
-    ],
+    availInput,
     function(err, results, fields) {
       console.log(results); // results contains rows returned by server
       console.log(fields); // fields contains extra meta data about results, if available
