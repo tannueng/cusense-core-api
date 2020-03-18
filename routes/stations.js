@@ -25,6 +25,13 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+const connection = mysql.createConnection({
+  host: "localhost",
+  user: process.env.SQL_USERNAME,
+  password: process.env.SQL_PASSWORD,
+  database: process.env.SQL_DB
+});
+
 defaultSQLquery =
   "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province,country FROM station WHERE publish = 1";
 
@@ -101,19 +108,18 @@ router.post("/add", (req, res) => {
   //     res.json(rows);
   //   }
   // );
-  var statement = pool.prepareStatement(
-    "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country) VALUES (?, ?, ?, ?, ?, ?, ?)"
+
+  connection.execute(
+    "INSERT INTO station (stationid, id, topic,isoutdoor, lat, lon, country) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [stationid, id, topic, isoutdoor, lat, lon, country],
+    function(err, results, fields) {
+      console.log(results); // results contains rows returned by server
+      console.log(fields); // fields contains extra meta data about results, if available
+
+      // If you execute same statement again, it will be picked from a LRU cache
+      // which will save query preparation time and give better performance
+    }
   );
-  statement
-    .execute(stationid, id, topic, isoutdoor, lat, lon, country)
-    .then(() => {
-      // handle success
-      res.json("Successfully Added");
-    })
-    .catch(error => {
-      // handle error
-      res.json(error);
-    });
 });
 
 module.exports = router;
