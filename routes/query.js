@@ -304,6 +304,7 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
 
   // console.log(timeframe, date, topic);
 
+  // ***************** MONTHLY ****************
   if (timeframe == "monthly") {
     const { error } = monthValidation(date);
     if (error) return res.status(400).send(error.details[0].message);
@@ -311,7 +312,7 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
     matchSpecificQuery(
       byStationSQLQuery(topic),
       //TODO change mean(*)
-      "select mean(*) from airdata where time >= '" +
+      "select "+mean_all+" from airdata where time >= '" +
         date +
         "-01' - 7h and time <= '" +
         date +
@@ -321,13 +322,15 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
       topic,
       res
     );
+
+    // ***************** DAILY ****************
   } else if (timeframe == "daily") {
     const { error } = dateValidation(date);
     if (error) return res.status(400).send(error.details[0].message);
 
     matchSpecificQuery(
       byStationSQLQuery(topic),
-      "select mean(*) from airdata where time >= '" +
+      "select "+mean_all+" from airdata where time >= '" +
         date +
         "' - 7h and time <= '" +
         date +
