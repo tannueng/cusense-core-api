@@ -35,7 +35,7 @@ defaultSQLquery =
 
 mean_pm = "mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10";
 mean_all =
-  "mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid)";
+  "mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid";
 
 router.get("/last-day", (req, res) => {
   influx
