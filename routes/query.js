@@ -33,6 +33,9 @@ const pool = mysql.createPool({
 defaultSQLquery =
   "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1";
 
+mean_pm = "mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10"
+mean_all = "mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid)"
+
 router.get("/last-day", (req, res) => {
   influx
     .query(
@@ -86,7 +89,7 @@ router.get("/active", (req, res) => {
     // Connection is automatically released when query resolves
     // console.log("Station data received from SQL");
     influx
-      .query("select mean(*) from airdata group by topic")
+      .query("select mean(*) from airdata where time > now() - 3h group by time(1h),topic order by time desc limit 1")
       .then(results => {
         // console.log(results);
         // console.log("before loop");
@@ -112,18 +115,20 @@ router.get("/active", (req, res) => {
   });
 });
 
+// **************************** PAST 24 HOUR QUERY ****************************
+
 router.get("/day/:type", (req, res) => {
   const type = req.params.type;
   if (type == "pm") {
     matchQuery(
       defaultSQLquery,
-      "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h group by topic",
+      "select "+mean_pm+" from airdata where time > now() - 24h group by topic",
       res
     );
   } else if (type == "all") {
     matchQuery(
       defaultSQLquery,
-      "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 24h group by topic",
+      "select "+mean_all+" from airdata where time > now() - 24h group by topic",
       res
     );
   } else {
@@ -141,7 +146,7 @@ router.post("/day/:type", (req, res) => {
     if (type == "pm") {
       matchQuery(
         byProjectSQLQuery(project),
-        'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h and "group" = \'' +
+        'select '+mean_pm+' from airdata where time > now() - 24h and "group" = \'' +
           project +
           "' group by topic",
         res
@@ -149,7 +154,7 @@ router.post("/day/:type", (req, res) => {
     } else if (type == "all") {
       matchQuery(
         byProjectSQLQuery(project),
-        'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 24h and "group" = \'' +
+        'select '+mean_all+' as temp from airdata where time > now() - 24h and "group" = \'' +
           project +
           "' group by topic",
         res
@@ -162,7 +167,7 @@ router.post("/day/:type", (req, res) => {
     if (type == "pm") {
       matchSpecificQuery(
         byStationSQLQuery(topic),
-        'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10 from airdata where time > now() - 24h and "topic" = \'' +
+        'select '+mean_pm+' from airdata where time > now() - 24h and "topic" = \'' +
           topic +
           "'",
         topic,
@@ -171,7 +176,7 @@ router.post("/day/:type", (req, res) => {
     } else if (type == "all") {
       matchSpecificQuery(
         byStationSQLQuery(topic),
-        'select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 24h and "topic" = \'' +
+        'select '+mean_all+' from airdata where time > now() - 24h and "topic" = \'' +
           topic +
           "'",
         topic,
@@ -185,19 +190,21 @@ router.post("/day/:type", (req, res) => {
   }
 });
 
+// ************************************************** REALTIME **************************************************
+
 router.get("/realtime/:type", (req, res) => {
   const type = req.params.type;
   if (type == "pm") {
     matchQuery(
       defaultSQLquery,
-      "select pm1, pm25, pm10 from airdata where time > now() - 3h group by topic order by time desc limit 1",
+      "select "+mean_pm+" from airdata where time > now() - 3h group by time(1h),topic fill(none) order by time desc limit 1",
       res
     );
   } else if (type == "all") {
     matchQuery(
       defaultSQLquery,
       // "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid from airdata where time > now() - 3h group by time(1h), topic order by time desc limit 1",
-      "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(co2) as co2, mean(humid) as humid from airdata where time > now() - 3h group by time(1h), topic fill(none) order by time desc limit 1",
+      "select "+mean_all+" from airdata where time > now() - 3h group by time(1h), topic fill(none) order by time desc limit 1",
       res
     );
   } else {
@@ -218,7 +225,7 @@ router.post("/realtime/:type", (req, res) => {
         byStationSQLQuery(topic),
         'select pm1, pm25, pm10 from airdata where time > now() - 3h and "topic" = \'' +
           topic +
-          "' order by time desc limit 1",
+          "' group by time(1h) fill(none) order by time desc limit 1",
         topic,
         res
       );
@@ -227,7 +234,7 @@ router.post("/realtime/:type", (req, res) => {
         byStationSQLQuery(topic),
         'select pm1, pm25, pm10, temp, co2, humid from airdata where time > now() - 3h and "topic" = \'' +
           topic +
-          "' order by time desc limit 1",
+          "' group by time(1h) fill(none) order by time desc limit 1",
         topic,
         res
       );
@@ -242,7 +249,7 @@ router.post("/realtime/:type", (req, res) => {
         byProjectSQLQuery(project),
         'select pm1, pm25, pm10 from airdata where time > now() - 3h and "group" = \'' +
           project +
-          "' order by time desc limit 1 group by topic ",
+          "' group by time(1h),topic fill(none) order by time desc limit 1 ",
         res
       );
     } else if (type == "all") {
@@ -250,7 +257,7 @@ router.post("/realtime/:type", (req, res) => {
         byProjectSQLQuery(project),
         'select pm1, pm25, pm10, temp, co2, humid from airdata where time > now() - 3h and "group" = \'' +
           project +
-          "' order by time desc limit 1 group by topic",
+          "' group by time(1h),topic fill(none) order by time desc limit 1 ",
         res
       );
     } else {
@@ -260,6 +267,8 @@ router.post("/realtime/:type", (req, res) => {
     res.status(400).send("Invalid POST parameter. Either 'topic' or 'project'");
   }
 });
+
+// **************************** BY STATION BY TIMEFRAME ****************************
 
 router.post("/byStation/:timeframe/:date", (req, res) => {
   const timeframe = req.params.timeframe;
@@ -306,7 +315,7 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
   }
 });
 
-//********************************************** */
+//********************* MATCH SQL AND INFLUX QUERY ************************* */
 
 function matchQuery(mysqlQuery, influxQuery, res) {
   pool.query(mysqlQuery, function(err, rows, fields) {
