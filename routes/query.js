@@ -420,12 +420,14 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
                   final_result[rows[i].id] = {};
                   final_result[rows[i].id].data = [];
                 }
-                console.log(results[j].time);
+                // console.log(results[j].time);
 
-                if (results[j].time != null)
+                if (results[j].time != null) {
                   results[j].time = results[j].time.toLocaleString("en-US", {
                     timeZone: "Asia/Bangkok"
                   });
+                  console.log(results[j].time);
+                }
 
                 if (results[j].pm1 != null)
                   results[j].pm1 = parseInt(results[j].pm1, 10);
@@ -448,6 +450,8 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
             }
             firstTime = true;
           }
+          console.log("********finalresult**********");
+          console.log(final_result);
           res.json(final_result);
         }
       })
