@@ -336,11 +336,11 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
         mean_all +
         " from airdata where time >= '" +
         date +
-        "' - 7h and time <= '" +
+        "' and time <= '" +
         date +
-        "' + 1d - 7h and \"topic\" = '" +
+        "' + 1d and \"topic\" = '" +
         topic +
-        "' group by time(1h)",
+        "' group by time(1h,-7h) order by time asc limit 24 tz('Asia/Bangkok')",
       topic,
       res
     );
