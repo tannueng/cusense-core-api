@@ -409,6 +409,7 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
         if (rows.length == 0) {
           res.status(404).send("Invalid 'topic' input.");
         } else {
+          console.log(results);
           let final_result = {};
           let firstTime = true;
           for (i = 0; i < rows.length; i++) {
@@ -419,6 +420,7 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
                   final_result[rows[i].id] = {};
                   final_result[rows[i].id].data = [];
                 }
+                console.log(results[j].time);
 
                 if (results[j].pm1 != null)
                   results[j].pm1 = parseInt(results[j].pm1, 10);
