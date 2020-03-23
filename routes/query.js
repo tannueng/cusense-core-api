@@ -422,6 +422,11 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
                 }
                 console.log(results[j].time);
 
+                if (results[j].time != null)
+                  results[j].time = results[j].time.toLocaleString("en-US", {
+                    timeZone: "Asia/Bangkok"
+                  });
+
                 if (results[j].pm1 != null)
                   results[j].pm1 = parseInt(results[j].pm1, 10);
                 if (results[j].pm25 != null)
