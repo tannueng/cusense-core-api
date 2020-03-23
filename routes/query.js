@@ -334,7 +334,7 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
         date +
         "' - 7h and time <= '" +
         date +
-        "' + 1d - 7h and \"topic\" = '" +
+        "' + 1d - 8h and \"topic\" = '" +
         topic +
         "' group by time(1h)",
       topic,
