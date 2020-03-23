@@ -424,6 +424,7 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
 
                 if (results[j].time != null) {
                   console.log("before ", results[j].time);
+                  console.log("before2 ", results[j].time.toString());
                   results[j].time = results[j].time.toLocaleString("en-US", {
                     timeZone: "Asia/Bangkok"
                   });
