@@ -425,7 +425,7 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
                 if (results[j].time != null) {
                   console.log("before ", results[j].time);
                   console.log("before2 ", results[j].time.toString());
-                  results[j].time = results[j].time.toLocaleString("en-US", {
+                  results[j].time = results[j].time.toLocaleString("th-TH", {
                     timeZone: "Asia/Bangkok"
                   });
                   console.log("after ", results[j].time);
@@ -453,7 +453,7 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
             firstTime = true;
           }
           console.log("********finalresult**********");
-          console.log(final_result[0].data);
+          // console.log(final_result[0].data);
           res.json(final_result);
         }
       })
