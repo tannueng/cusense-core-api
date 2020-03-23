@@ -309,6 +309,13 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
     const { error } = monthValidation(date);
     if (error) return res.status(400).send(error.details[0].message);
 
+    const getDaysInMonth = date =>
+      new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+
+    daycount = getDaysInMonth(
+      new Date(date.substring(0, 4), parseInt(date.substring(5, 7)))
+    );
+
     matchSpecificQuery(
       byStationSQLQuery(topic),
       //TODO change mean(*)
@@ -316,11 +323,13 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
         mean_all +
         " from airdata where time >= '" +
         date +
-        "-01' - 7h and time <= '" +
+        "-01' and time <= '" +
         date +
-        "-01' + 30d - 7h and  \"topic\" = '" +
+        "-01' + " +
+        daycount +
+        'd - 1s and  "topic" = \'' +
         topic +
-        "' group by time(1d)",
+        "' group by time(1d,-7h)",
       topic,
       res
     );
@@ -338,7 +347,7 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
         date +
         "' and time <= '" +
         date +
-        "' + 1d and \"topic\" = '" +
+        "' + 1d - 1s and \"topic\" = '" +
         topic +
         "' group by time(1h,-7h) order by time asc limit 24 tz('Asia/Bangkok')",
       topic,
@@ -409,7 +418,7 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
         if (rows.length == 0) {
           res.status(404).send("Invalid 'topic' input.");
         } else {
-          console.log(results);
+          // console.log(results);
           let final_result = {};
           let firstTime = true;
           for (i = 0; i < rows.length; i++) {
