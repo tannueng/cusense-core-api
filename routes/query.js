@@ -312,7 +312,9 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
     matchSpecificQuery(
       byStationSQLQuery(topic),
       //TODO change mean(*)
-      "select "+mean_all+" from airdata where time >= '" +
+      "select " +
+        mean_all +
+        " from airdata where time >= '" +
         date +
         "-01' - 7h and time <= '" +
         date +
@@ -330,11 +332,13 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
 
     matchSpecificQuery(
       byStationSQLQuery(topic),
-      "select "+mean_all+" from airdata where time >= '" +
+      "select " +
+        mean_all +
+        " from airdata where time >= '" +
         date +
         "' - 7h and time <= '" +
         date +
-        "' + 1d - 8h and \"topic\" = '" +
+        "' + 1d - 10h and \"topic\" = '" +
         topic +
         "' group by time(1h)",
       topic,
