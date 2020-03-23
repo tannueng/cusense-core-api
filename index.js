@@ -45,6 +45,10 @@ app.get("/", (req, res) => {
   res.send("CONNECTED TO API SERVER");
 });
 
+app.get("/heartbeat", (req, res) => {
+  res.send("The core API service is running.");
+});
+
 //Route Middleware
 app.use("/api/v1/stationInfo", stationRoute);
 app.use("/api/v1/manageStations", manageStationsRoute);
