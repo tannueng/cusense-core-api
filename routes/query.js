@@ -422,12 +422,12 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
                 }
                 // console.log(results[j].time);
 
-                if (results[j].time != null) {
-                  console.log("before ", results[j].time);
-                  console.log("before2 ", results[j].time.toString());
-                  results[j].time = results[j].time._nanoISO(); 
-                  console.log("after ", results[j].time);
-                }
+                // if (results[j].time != null) {
+                //   console.log("before ", results[j].time);
+                //   console.log("before2 ", results[j].time.toString());
+                //   results[j].time = results[j].time.toNanoISOString();
+                //   console.log("after ", results[j].time);
+                // }
 
                 if (results[j].pm1 != null)
                   results[j].pm1 = parseInt(results[j].pm1, 10);
@@ -450,7 +450,7 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
             }
             firstTime = true;
           }
-          console.log("********finalresult**********");
+          // console.log("********finalresult**********");
           // console.log(final_result[0].data);
           res.json(final_result);
         }
