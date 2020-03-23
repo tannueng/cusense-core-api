@@ -453,7 +453,7 @@ function matchSpecificQuery(mysqlQuery, influxQuery, topic, res) {
             firstTime = true;
           }
           console.log("********finalresult**********");
-          console.log(final_result);
+          console.log(final_result[0].data);
           res.json(final_result);
         }
       })
