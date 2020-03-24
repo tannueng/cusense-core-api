@@ -4,7 +4,8 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const cors = require('cors')
+const cors = require("cors");
+const request = require("request");
 
 // const port = 3333;
 
@@ -32,13 +33,23 @@ mongoose.connect(
   () => console.log("Connected to DB")
 );
 const config = {
-  origin: ['http://localhost:3000','http://161.200.80.206:8082'],
-  maxAge:3600
-}
+  origin: [
+    "http://localhost:3000",
+    "http://161.200.80.206:8082",
+    "https://cusense.net",
+    "http://161.200.80.206:8092"
+  ],
+  maxAge: 3600
+};
 
 //Middleware
 app.use(express.json());
 app.use(cors(config));
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
 
 app.get("/", (req, res) => {
   console.log("Responding to root route");
