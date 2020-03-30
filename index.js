@@ -65,8 +65,12 @@ app.use("/api/v1/stationInfo", stationRoute);
 app.use("/api/v1/manageStations", manageStationsRoute);
 app.use("/api/v1/sensorData", cors(config), queryRoute);
 app.use("/api/v1/users", authRoute);
-
 app.use("/api/", tempRoute);
+
+//New Route Middleware
+app.use("/v1/stationInfo", stationRoute);
+app.use("/v1/manageStations", manageStationsRoute);
+app.use("/v1/sensorData", cors(config), queryRoute);
 
 localhost: 3333;
 app.listen(3333, () => {
