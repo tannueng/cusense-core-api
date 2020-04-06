@@ -5,7 +5,6 @@ const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const request = require("request");
 
 // const port = 3333;
 
@@ -13,7 +12,7 @@ const request = require("request");
 const stationRoute = require("./routes/stations");
 const manageStationsRoute = require("./routes/manageStations");
 const queryRoute = require("./routes/query");
-const authRoute = require("./routes/auth");
+// const authRoute = require("./routes/auth");
 const tempRoute = require("./routes/temp");
 
 //HTTPS
@@ -64,7 +63,7 @@ app.get("/heartbeat", (req, res) => {
 app.use("/api/v1/stationInfo", stationRoute);
 app.use("/api/v1/manageStations", manageStationsRoute);
 app.use("/api/v1/sensorData", cors(config), queryRoute);
-app.use("/api/v1/users", authRoute);
+// app.use("/api/v1/users", authRoute);
 app.use("/api/", tempRoute);
 
 //New Route Middleware

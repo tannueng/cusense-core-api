@@ -48,39 +48,6 @@ router.get("/last-day", (req, res) => {
     .catch(console.error);
 });
 
-router.post("/direct", (req, res) => {
-  const { error } = directQueryValidation(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
-  pool.query(defaultSQLquery, function(err, rows, fields) {
-    influx
-      .query(req.body.query)
-      .then(results => {
-        let final_result = {};
-        let firstTime = true;
-        for (i = 0; i < rows.length; i++) {
-          for (j = 0; j < results.length; j++) {
-            if (rows[i].topic == results[j].topic) {
-              if (firstTime) {
-                final_result[rows[i].id] = {};
-                final_result[rows[i].id].data = [];
-              }
-              final_result[rows[i].id].data.push(results[j]);
-              final_result[rows[i].id].info = rows[i];
-              firstTime = false;
-            }
-          }
-          firstTime = true;
-        }
-        res.json(final_result);
-      })
-      .catch(error => {
-        res.status(400).send(error.message);
-        console.log(error.message);
-      });
-  });
-});
-
 router.get("/active", (req, res) => {
   pool.query("SELECT * FROM station WHERE publish = 1", function(
     err,
@@ -104,8 +71,8 @@ router.get("/active", (req, res) => {
               //   "in loop matches: " + rows[i].topic + " & " + results[j].topic
               // );
               // rows[i].info = results[j];
-              final_result[rows[i].id] = results[j];
-              final_result[rows[i].id].info = rows[i];
+              final_result[rows[i].topic] = results[j];
+              final_result[rows[i].topic].info = rows[i];
               // console.log("final_result", final_result);
             }
           }
@@ -378,8 +345,8 @@ function matchQuery(mysqlQuery, influxQuery, res) {
                 // console.log("match : ", rows[i].topic, results[j].topic);
                 //Match Corresponding Topic
                 if (firstTime) {
-                  final_result[rows[i].id] = {};
-                  final_result[rows[i].id].data = [];
+                  final_result[rows[i].topic] = {};
+                  final_result[rows[i].topic].data = [];
                 }
 
                 if (results[j].pm1 != null)
@@ -396,8 +363,8 @@ function matchQuery(mysqlQuery, influxQuery, res) {
                     parseFloat(results[j].temp).toFixed(1)
                   );
 
-                final_result[rows[i].id].data.push(results[j]);
-                final_result[rows[i].id].info = rows[i];
+                final_result[rows[i].topic].data.push(results[j]);
+                final_result[rows[i].topic].info = rows[i];
                 firstTime = false;
               }
             }
