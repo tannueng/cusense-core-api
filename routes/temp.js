@@ -69,11 +69,11 @@ function matchQuery(mysqlQuery, influxQuery, distinct, res) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == distinct) {
               if (firstTime) {
-                final_result[rows[i].topic] = {};
-                final_result[rows[i].topic].data = [];
+                final_result[rows[i].id] = {};
+                final_result[rows[i].id].data = [];
               }
-              final_result[rows[i].topic].data.push(results[j]);
-              final_result[rows[i].topic].info = rows[i];
+              final_result[rows[i].id].data.push(results[j]);
+              final_result[rows[i].id].info = rows[i];
               firstTime = false;
             }
           }
@@ -104,11 +104,11 @@ function matchMultipleQuery(mysqlQuery, influxQuery, distinct, res) {
           for (j = 0; j < results.length; j++) {
             if (rows[i].topic == results[j].topic) {
               if (firstTime) {
-                final_result[rows[i].topic] = {};
-                final_result[rows[i].topic].data = [];
+                final_result[rows[i].id] = {};
+                final_result[rows[i].id].data = [];
               }
-              final_result[rows[i].topic].data.push(results[j]);
-              final_result[rows[i].topic].info = rows[i];
+              final_result[rows[i].id].data.push(results[j]);
+              final_result[rows[i].id].info = rows[i];
               firstTime = false;
             }
           }
