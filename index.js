@@ -36,9 +36,9 @@ const config = {
     "http://localhost:3000",
     "http://161.200.80.206:8082",
     "https://cusense.net",
-    "http://161.200.80.206:8092"
+    "http://161.200.80.206:8092",
   ],
-  maxAge: 3600
+  maxAge: 3600,
 };
 
 //Middleware
@@ -57,6 +57,14 @@ app.get("/", (req, res) => {
 
 app.get("/heartbeat", (req, res) => {
   res.send("The core API service is running.");
+});
+
+app.use("/api", (req, res, next) => {
+  res.header(
+    "We are moving!",
+    "This API service will be terminated on 12 APR 2020.\nWe are moving to the new URL.\nCheck out https://cusense.net/portal/#!/apis/7663e426-e4e5-4cee-a3e4-26e4e57cee4c/pages/9d46f643-4652-44eb-86f6-434652b4ebb0 for the new API documentation.\nThe new baseURL is https://www.cusense.net:8082 use alongside with the new your own API Key."
+  );
+  next();
 });
 
 //Route Middleware
