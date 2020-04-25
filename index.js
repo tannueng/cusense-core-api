@@ -77,7 +77,7 @@ app.use(
       "This API service terminated on 12 APR 2020. We moved to the new URL. Checkout https://cusense.net/portal/#!/apis/7663e426-e4e5-4cee-a3e4-26e4e57cee4c/pages/9d46f643-4652-44eb-86f6-434652b4ebb0 for the new API documentation. The new baseURL is https://www.cusense.net:8082 use alongside with the new your own API Key."
     );
 
-    res.status(404).sendFile("api-moved.html");
+    res.status(404).sendFile(path.join(__dirname, "/api-moved.html"));
   }
 );
 
