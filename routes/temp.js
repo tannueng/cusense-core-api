@@ -1,11 +1,5 @@
 const router = require("express").Router();
 const Influx = require("influx");
-const verify = require("./verifyToken");
-const {
-  directQueryValidation,
-  dateValidation,
-  monthValidation
-} = require("../validation");
 const mysql = require("mysql2");
 const dotenv = require("dotenv");
 
@@ -43,7 +37,7 @@ router.get("/getpttdata", (req, res) => {
 });
 
 router.get("/getcudata", (req, res) => {
-  matchMultipleQuery(
+  matchMultipleQuery( 
     byGroupSQLQuery("cusensor2"),
     "select mean(pm1) as pm1, mean(pm25) as pm25, mean(pm10) as pm10, mean(temp) as temp, mean(humid) as humid, mean(temp) as temp from airdata where time > now() - 1h and \"group\" = 'cusensor2' group by topic",
     "cusensor2",

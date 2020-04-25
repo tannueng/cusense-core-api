@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const Influx = require("influx");
-const verify = require("./verifyToken");
 const {
   directQueryValidation,
   dateValidation,

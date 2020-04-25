@@ -4,7 +4,6 @@ const fs = require("fs");
 const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-// const cors = require("cors");
 const morgan = require("morgan");
 var path = require("path");
 
@@ -15,7 +14,7 @@ const stationRoute = require("./routes/stations");
 const manageStationsRoute = require("./routes/manageStations");
 const queryRoute = require("./routes/query");
 // const authRoute = require("./routes/auth");
-const tempRoute = require("./routes/temp");
+// const tempRoute = require("./routes/temp");
 
 //HTTPS
 // var key = fs.readFileSync(__dirname + "/../certs/selfsigned.key");
@@ -33,15 +32,6 @@ mongoose.connect(
   { useNewUrlParser: true, useUnifiedTopology: true },
   () => console.log("Connected to DB")
 );
-const config = {
-  origin: [
-    "http://localhost:3000",
-    "http://161.200.80.206:8082",
-    "https://cusense.net",
-    "http://161.200.80.206:8092",
-  ],
-  maxAge: 3600,
-};
 
 accessLogStream = fs.createWriteStream(path.join(__dirname, "old_access.log"), {
   flags: "a",
@@ -49,7 +39,6 @@ accessLogStream = fs.createWriteStream(path.join(__dirname, "old_access.log"), {
 
 //Middleware
 app.use(express.json());
-// app.use(cors(config));
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
