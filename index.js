@@ -64,7 +64,7 @@ app.get("/", (req, res) => {
 app.get("/heartbeat", (req, res) => {
   res.send("The core API service is running.");
 });
-getpttdata;
+
 app.use(
   "/api/getpttdata",
   morgan("combined", { stream: accessLogStream }),
