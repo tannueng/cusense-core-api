@@ -33,6 +33,8 @@ if (process.env.ENVVAR_AVAIL != "available") {
   console.log("       TERMINATING       ");
   console.log("*************************");
   process.exit(1);
+} else {
+  console.log("Found environment variables.");
 }
 
 accessLogStream = fs.createWriteStream(path.join(__dirname, "old_access.log"), {
