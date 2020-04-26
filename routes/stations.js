@@ -24,12 +24,12 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: process.env.SQL_USERNAME,
-  password: process.env.SQL_PASSWORD,
-  database: process.env.SQL_DB
-});
+// const connection = mysql.createConnection({
+//   host: "localhost",
+//   user: process.env.SQL_USERNAME,
+//   password: process.env.SQL_PASSWORD,
+//   database: process.env.SQL_DB
+// });
 
 defaultSQLquery =
   "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province,country FROM station WHERE publish = 1";

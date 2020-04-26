@@ -3,7 +3,6 @@ const express = require("express");
 const fs = require("fs");
 const app = express();
 const dotenv = require("dotenv");
-const mongoose = require("mongoose");
 const morgan = require("morgan");
 var path = require("path");
 
@@ -13,7 +12,6 @@ var path = require("path");
 const stationRoute = require("./routes/stations");
 const manageStationsRoute = require("./routes/manageStations");
 const queryRoute = require("./routes/query");
-// const authRoute = require("./routes/auth");
 // const tempRoute = require("./routes/temp");
 
 //HTTPS
@@ -26,12 +24,16 @@ const queryRoute = require("./routes/query");
 
 dotenv.config();
 
-// Connect to DB
-mongoose.connect(
-  process.env.MONGODB_CONNECT,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  () => console.log("Connected to DB")
-);
+if (process.env.ENVVAR_AVAIL != "true") {
+  console.log(
+    "Environment Variable is not found!\nMay have trouble connecting with mySQL and InfluxDB."
+  );
+  console.log("");
+  console.log("*************************");
+  console.log("       TERMINATING       ");
+  console.log("*************************");
+  process.exit(1);
+}
 
 accessLogStream = fs.createWriteStream(path.join(__dirname, "old_access.log"), {
   flags: "a",

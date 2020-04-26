@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const Influx = require("influx");
 const {
-  directQueryValidation,
   dateValidation,
   monthValidation
 } = require("../validation");
