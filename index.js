@@ -24,7 +24,7 @@ const queryRoute = require("./routes/query");
 
 dotenv.config();
 
-if (process.env.ENVVAR_AVAIL != "true") {
+if (process.env.ENVVAR_AVAIL != "available") {
   console.log(
     "Environment Variable is not found!\nMay have trouble connecting with mySQL and InfluxDB."
   );
