@@ -73,10 +73,10 @@ app.get("/heartbeat", (req, res) => {
 //     res.status(404).sendFile(path.join(__dirname, "/html/api-ptt-moved.html"));
 //   }
 // );
-morgan.format(
-  "myformat",
-  ':remote-addr - :remote-user [:date[Asia/Bangkok]] ":method :url HTTP/:http-version" :status :res[content-length]'
-);
+// morgan.format(
+//   "myformat",
+//   ':remote-addr - :remote-user [:date[Asia/Bangkok]] ":method :url HTTP/:http-version" :status :res[content-length]'
+// );
 
 // morgan(
 //   ':remote-addr - :remote-user [:date[Asia/Bangkok]] ":method :url HTTP/:http-version" :status :res[content-length]'
@@ -84,7 +84,7 @@ morgan.format(
 
 app.use(
   "/api",
-  morgan("myformat", { stream: accessLogStream }),
+  morgan("combined", { stream: accessLogStream }),
   (req, res, next) => {
     res.header(
       "We-moved!",
