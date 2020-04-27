@@ -73,14 +73,19 @@ app.get("/heartbeat", (req, res) => {
 //     res.status(404).sendFile(path.join(__dirname, "/html/api-ptt-moved.html"));
 //   }
 // );
+morgan.format(
+  "myformat",
+  ':remote-addr - :remote-user [:date[Asia/Bangkok]] ":method :url HTTP/:http-version" :status :res[content-length]'
+);
+
+// morgan(
+//   ':remote-addr - :remote-user [:date[Asia/Bangkok]] ":method :url HTTP/:http-version" :status :res[content-length]'
+// );
 
 app.use(
   "/api",
-  morgan("combined", { stream: accessLogStream }),
+  morgan("myformat", { stream: accessLogStream }),
   (req, res, next) => {
-    morgan(
-      ':remote-addr - :remote-user [:date[Asia/Bangkok]] ":method :url HTTP/:http-version" :status :res[content-length]'
-    );
     res.header(
       "We-moved!",
       "This API service terminated on 25 APR 2020. We moved to the new URL. Checkout https://cusense.net/portal/#!/apis/7663e426-e4e5-4cee-a3e4-26e4e57cee4c/pages/9d46f643-4652-44eb-86f6-434652b4ebb0 for the new API documentation. The new baseURL is https://www.cusense.net:8082 use alongside with the new your own API Key."
