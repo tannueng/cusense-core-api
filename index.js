@@ -58,44 +58,44 @@ app.get("/heartbeat", (req, res) => {
   res.send("The core API service is running.");
 });
 
-app.use(
-  "/api/getpttdata",
-  morgan("combined", { stream: accessLogStream }),
-  (req, res, next) => {
-    morgan(
-      ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]'
-    );
-    res.header(
-      "We-moved!",
-      "This API service terminated on 25 APR 2020. We moved to the new URL. Checkout https://cusense.net/portal/#!/apis/7663e426-e4e5-4cee-a3e4-26e4e57cee4c/pages/9d46f643-4652-44eb-86f6-434652b4ebb0 for the new API documentation. The new baseURL is https://www.cusense.net:8082 use alongside with the new your own API Key."
-    );
+// app.use(
+//   "/api/getpttdata",
+//   morgan("combined", { stream: accessLogStream }),
+//   (req, res, next) => {
+//     morgan(
+//       ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]'
+//     );
+//     res.header(
+//       "We-moved!",
+//       "This API service terminated on 25 APR 2020. We moved to the new URL. Checkout https://cusense.net/portal/#!/apis/7663e426-e4e5-4cee-a3e4-26e4e57cee4c/pages/9d46f643-4652-44eb-86f6-434652b4ebb0 for the new API documentation. The new baseURL is https://www.cusense.net:8082 use alongside with the new your own API Key."
+//     );
 
-    res.status(404).sendFile(path.join(__dirname, "/html/api-ptt-moved.html"));
-  }
-);
+//     res.status(404).sendFile(path.join(__dirname, "/html/api-ptt-moved.html"));
+//   }
+// );
 
-app.use(
-  "/api",
-  morgan("combined", { stream: accessLogStream }),
-  (req, res, next) => {
-    morgan(
-      ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]'
-    );
-    res.header(
-      "We-moved!",
-      "This API service terminated on 25 APR 2020. We moved to the new URL. Checkout https://cusense.net/portal/#!/apis/7663e426-e4e5-4cee-a3e4-26e4e57cee4c/pages/9d46f643-4652-44eb-86f6-434652b4ebb0 for the new API documentation. The new baseURL is https://www.cusense.net:8082 use alongside with the new your own API Key."
-    );
+// app.use(
+//   "/api",
+//   morgan("combined", { stream: accessLogStream }),
+//   (req, res, next) => {
+//     morgan(
+//       ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]'
+//     );
+//     res.header(
+//       "We-moved!",
+//       "This API service terminated on 25 APR 2020. We moved to the new URL. Checkout https://cusense.net/portal/#!/apis/7663e426-e4e5-4cee-a3e4-26e4e57cee4c/pages/9d46f643-4652-44eb-86f6-434652b4ebb0 for the new API documentation. The new baseURL is https://www.cusense.net:8082 use alongside with the new your own API Key."
+//     );
 
-    res.status(404).sendFile(path.join(__dirname, "/html/api-moved.html"));
-  }
-);
+//     res.status(404).sendFile(path.join(__dirname, "/html/api-moved.html"));
+//   }
+// );
 
 //Original Route Middleware
 // app.use("/api/v1/stationInfo", stationRoute);
 // app.use("/api/v1/manageStations", manageStationsRoute);
 // app.use("/api/v1/sensorData", cors(config), queryRoute);
 // app.use("/api/v1/users", authRoute);
-// app.use("/api/", tempRoute);
+app.use("/api/", tempRoute);
 
 //New Route Middleware
 app.use("/v1/stationInfo", stationRoute);
