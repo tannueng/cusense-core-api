@@ -79,7 +79,7 @@ app.use(
   morgan("combined", { stream: accessLogStream }),
   (req, res, next) => {
     morgan(
-      ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]'
+      ':remote-addr - :remote-user [:date[Asia/Bangkok]] ":method :url HTTP/:http-version" :status :res[content-length]'
     );
     res.header(
       "We-moved!",
