@@ -12,7 +12,7 @@ var path = require("path");
 const stationRoute = require("./routes/stations");
 const manageStationsRoute = require("./routes/manageStations");
 const queryRoute = require("./routes/query");
-// const tempRoute = require("./routes/temp");
+const tempRoute = require("./routes/temp");
 
 //HTTPS
 // var key = fs.readFileSync(__dirname + "/../certs/selfsigned.key");
