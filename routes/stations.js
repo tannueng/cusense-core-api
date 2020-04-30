@@ -77,7 +77,7 @@ router.get("/listProject", (req, res) => {
         // final_result[rows[i].project] = rows[i];
         listproject.push(rows[i].project);
       }
-      final_result[project] = listproject;
+      final_result["project"] = listproject;
       res.json(final_result);
     }
   );
