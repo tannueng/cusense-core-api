@@ -72,9 +72,12 @@ router.get("/listProject", (req, res) => {
     function (err, rows, fields) {
       // Connection is automatically released when query resolves
       let final_result = {};
+      let listproject = [];
       for (i = 0; i < rows.length; i++) {
-        final_result[rows[i].project] = rows[i];
+        // final_result[rows[i].project] = rows[i];
+        listproject.push(rows[i].project);
       }
+      final_result[project] = listproject;
       res.json(final_result);
     }
   );
