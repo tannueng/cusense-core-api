@@ -71,7 +71,11 @@ router.get("/listProject", (req, res) => {
     "SELECT DISTINCT project FROM `station` WHERE publish = 1",
     function (err, rows, fields) {
       // Connection is automatically released when query resolves
-      res.json(rows);
+      let final_result = {};
+      for (i = 0; i < rows.length; i++) {
+        final_result[rows[i].project] = rows[i];
+      }
+      res.json(final_result);
     }
   );
 });
