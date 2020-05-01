@@ -64,6 +64,7 @@ router.get("/user/:id", function (req, res) {
       for (j = 0; j < results.length; j++) {
         console.log("looping " + j);
         if (results[j].id == id) {
+          console.log("found!! " + j);
           // final_result.push(results[j]);
           console.log(results[j]);
           final_result.result = results[j];
