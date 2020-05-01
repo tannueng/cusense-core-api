@@ -66,10 +66,12 @@ router.get("/covid/check/:id", function (req, res) {
   let results = [];
   let foundcovid = false;
   let validID = true;
+
   console.log("INPUT ID: " + id);
+
   if (chkDigitPid(id)) {
     validID = true;
-    console.log("Valid ID");
+    // console.log("Valid ID");
 
     fs.createReadStream("/home/api/files/traveller_list_05.csv")
       .pipe(
@@ -93,119 +95,34 @@ router.get("/covid/check/:id", function (req, res) {
       )
       .on("data", (data) => results.push(data))
       .on("end", () => {
-        // console.log(results);
-
         for (j = 0; j < results.length; j++) {
-          // console.log("looping " + j);
           if (results[j].id == id) {
-            // console.log("found!! " + j);
             foundcovid = true;
-            // final_result.push(results[j]);
-            // console.log(results[j]);
             final_result.status = "มีความเสี่ยงติดเชื้อ";
             final_result.info = results[j];
+            console.log("ID Matches: ", final_result);
             res.status(200).json(final_result);
             break;
           }
         }
-        console.log("final_result", final_result);
-        // console.log("foundcovid", foundcovid);
+
+        // Valid ID but Not in Database
         if (foundcovid == false && validID) {
-          // errors.email = "User not found";
-          console.log(foundcovid);
+          console.log("ID Not Found");
           res.status(200).json({
             status: "ไม่อยู่ในกลุ่มเสี่ยง จาก จ.ภูเก็ต",
             หมายเลขบัตรประชาชน: id,
           });
-          // stop further execution in this callback
         }
       });
   } else {
-    console.log("Bad Input: " + id);
+    //Invalid ID Input
     validID = false;
     res
       .status(400)
       .json({ status: "หมายเลขบัตรประชาชนไม่ถูกต้อง", หมายเลขบัตรประชาชน: id });
   }
 });
-
-// router.get("/covid/check/:id", function (req, res) {
-//   let id = req.params.id;
-
-//   let final_result = {};
-//   let results = [];
-//   let foundcovid = false;
-//   let validID = true;
-
-//   if (!Number.isInteger(id) && id.length != 13) {
-//     console.log("Bad Input");
-//     validID = false;
-//     res.status(400).json({ status: "หมายเลขบัตรประชาชนไม่ถูกต้อง" });
-//   }
-
-//   if (chkDigitPid(id)) {
-//     validID = true;
-//   } else {
-//     console.log("Bad Input");
-//     validID = false;
-//     res.status(400).json({ status: "หมายเลขบัตรประชาชนไม่ถูกต้อง" });
-//   }
-
-//   fs.createReadStream("/home/api/files/traveller_list_01.csv")
-//     .pipe(
-//       // csv({
-//       //   headers: false,
-//       // })
-
-//       csv([
-//         "ลำดับ",
-//         "คำนำหน้า",
-//         "ชื่อ",
-//         "สกุล",
-//         "หมายเลขบัตรปชช",
-//         "หมายเลขโทรศัพท์",
-//         "บ้านเลขที่",
-//         "หมู่ที่",
-//         "ตำบล",
-//         "อำเภอ",
-//         "บ้านเลขที่",
-//         "หมู่ที่",
-//         "ตำบล",
-//         "อำเภอ",
-//         "จังหวัด",
-//       ])
-//     )
-//     .on("data", (data) => results.push(data))
-//     .on("end", () => {
-//       // console.log(results);
-//       console.log("INPUT ID: " + id);
-//       for (j = 0; j < results.length; j++) {
-//         // console.log("looping " + j);
-//         if (results[j].หมายเลขบัตรปชช == id) {
-//           // console.log("found!! " + j);
-//           foundcovid = true;
-//           // final_result.push(results[j]);
-//           // console.log(results[j]);
-//           final_result.status = "มีความเสี่ยงติดเชื้อ";
-//           final_result.info = results[j];
-//           res.status(222).json(final_result);
-//           break;
-//         }
-//       }
-//       console.log("final_result", final_result);
-//       // console.log("foundcovid", foundcovid);
-//       if (foundcovid == false && validID) {
-//         // errors.email = "User not found";
-//         console.log(foundcovid);
-//         res
-//           .status(200)
-//           .json({ status: "ไม่พบความเสี่ยง", หมายเลขบัตรประชาชน: id });
-//         // stop further execution in this callback
-//       }
-//     });
-
-//   // console.log(final_result);
-// });
 
 // *********** COVID *****************
 defaultSQLquery =
