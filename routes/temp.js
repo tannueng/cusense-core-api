@@ -28,9 +28,8 @@ const pool = mysql.createPool({
 const fs = require("fs");
 const csv = require("csv-parser");
 
-let results = [];
-
 router.get("/user/:id", function (req, res) {
+  let results = [];
   fs.createReadStream("/home/api/files/traveller_list_01.csv")
     .pipe(
       csv({
@@ -42,7 +41,7 @@ router.get("/user/:id", function (req, res) {
       console.log(results);
     });
 
-  res.send("user\n" + results);
+  res.send(results);
 });
 
 // *********** COVID *****************
