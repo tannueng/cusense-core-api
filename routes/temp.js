@@ -34,9 +34,11 @@ router.get("/covid/check/:id", function (req, res) {
   let final_result = {};
   let results = [];
   let foundcovid = false;
+  let validID = true;
 
   if (!Number.isInteger(id) && id.length != 13) {
     console.log("Bad Input");
+    validID = false;
     res
       .status(400)
       .json({ status: 400, errors: "หมายเลขบัตรประชาชนไม่ถูกต้อง" });
@@ -84,7 +86,7 @@ router.get("/covid/check/:id", function (req, res) {
       }
       console.log("final_result", final_result);
       // console.log("foundcovid", foundcovid);
-      if (foundcovid == false) {
+      if (foundcovid == false && validID) {
         // errors.email = "User not found";
         console.log(foundcovid);
         res
