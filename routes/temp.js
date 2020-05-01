@@ -31,7 +31,7 @@ const csv = require("csv-parser");
 router.get("/user/:id", function (req, res) {
   let id = req.params.id;
 
-  let final_res = {};
+  let final_result = {};
   let results = [];
   fs.createReadStream("/home/api/files/traveller_list_01.csv")
     .pipe(
@@ -44,7 +44,7 @@ router.get("/user/:id", function (req, res) {
         "คำนำหน้า",
         "ชื่อ",
         "สกุล",
-        "เลขบัตร ปชช.",
+        "id",
         "หมายเลขโทรศัพท์",
         "บ้านเลขที่",
         "หมู่ที่",
@@ -62,7 +62,13 @@ router.get("/user/:id", function (req, res) {
       console.log(results);
     });
 
-  res.json(final_res);
+  for (j = 0; j < results.length; j++) {
+    if (rows[j].id == id) {
+      final_result[rows[j].id].data.push(results[j]);
+    }
+  }
+
+  res.json(final_result);
 });
 
 // *********** COVID *****************
