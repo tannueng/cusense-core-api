@@ -13,6 +13,7 @@ const stationRoute = require("./routes/stations");
 const manageStationsRoute = require("./routes/manageStations");
 const queryRoute = require("./routes/query");
 const tempRoute = require("./routes/temp");
+const covidRoute = require("./routes/covid");
 
 //HTTPS
 // var key = fs.readFileSync(__dirname + "/../certs/selfsigned.key");
@@ -102,6 +103,7 @@ app.use(
 // app.use("/api/v1/sensorData", cors(config), queryRoute);
 // app.use("/api/v1/users", authRoute);
 app.use("/api/", tempRoute);
+app.use("/covid/", covidRoute);
 
 //New Route Middleware
 app.use("/v1/stationInfo", stationRoute);
