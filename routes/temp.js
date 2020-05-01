@@ -36,6 +36,7 @@ router.get("/covid/check/:id", function (req, res) {
   let foundcovid = false;
 
   if (!Number.isInteger(id) && id.length != 13) {
+    console.log("Bad Input");
     res
       .status(400)
       .json({ status: 400, errors: "หมายเลขบัตรประชาชนไม่ถูกต้อง" });
@@ -71,10 +72,10 @@ router.get("/covid/check/:id", function (req, res) {
       for (j = 0; j < results.length; j++) {
         // console.log("looping " + j);
         if (results[j].หมายเลขบัตรปชช == id) {
-          console.log("found!! " + j);
+          // console.log("found!! " + j);
           foundcovid = true;
           // final_result.push(results[j]);
-          console.log(results[j]);
+          // console.log(results[j]);
           final_result.status = "มีความเสี่ยงติดเชื้อ";
           final_result.info = results[j];
           res.status(222).json(final_result);
@@ -82,9 +83,10 @@ router.get("/covid/check/:id", function (req, res) {
         }
       }
       console.log("final_result", final_result);
-      console.log("foundcovid", foundcovid);
+      // console.log("foundcovid", foundcovid);
       if (foundcovid == false) {
         // errors.email = "User not found";
+        console.log(foundcovid);
         res
           .status(200)
           .json({ status: "ไม่พบความเสี่ยง", หมายเลขบัตรประชาชน: id });
