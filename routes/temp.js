@@ -28,6 +28,37 @@ const pool = mysql.createPool({
 const fs = require("fs");
 const csv = require("csv-parser");
 
+function chkDigitPid(p_iPID) {
+  var total = 0;
+  var iPID;
+  var chk;
+  var Validchk;
+  iPID = p_iPID.replace(/-/g, "");
+  Validchk = iPID.substr(12, 1);
+  var j = 0;
+  var pidcut;
+  for (var n = 0; n < 12; n++) {
+    pidcut = parseInt(iPID.substr(j, 1));
+    total = total + pidcut * (13 - n);
+    j++;
+  }
+
+  chk = 11 - (total % 11);
+
+  if (chk == 10) {
+    chk = 0;
+  } else if (chk == 11) {
+    chk = 1;
+  }
+  if (chk == Validchk) {
+    // alert("ระบุหมายเลขประจำตัวประชาชนถูกต้อง");
+    return true;
+  } else {
+    // alert("ระบุหมายเลขประจำตัวประชาชนไม่ถูกต้อง");
+    return false;
+  }
+}
+
 router.get("/covid/check/:id", function (req, res) {
   let id = req.params.id;
 
@@ -41,6 +72,15 @@ router.get("/covid/check/:id", function (req, res) {
     validID = false;
     res.status(400).json({ status: "หมายเลขบัตรประชาชนไม่ถูกต้อง" });
   }
+
+  if (chkDigitPid(id)) {
+    validID = true;
+  } else {
+    console.log("Bad Input");
+    validID = false;
+    res.status(400).json({ status: "หมายเลขบัตรประชาชนไม่ถูกต้อง" });
+  }
+
   fs.createReadStream("/home/api/files/traveller_list_01.csv")
     .pipe(
       // csv({
@@ -95,6 +135,73 @@ router.get("/covid/check/:id", function (req, res) {
     });
 
   // console.log(final_result);
+});
+
+router.get("/covid/check2/:id", function (req, res) {
+  let id = req.params.id;
+
+  let final_result = {};
+  let results = [];
+  let foundcovid = false;
+  let validID = true;
+  console.log("INPUT ID: " + id);
+  if (chkDigitPid(id)) {
+    validID = true;
+    console.log("Valid ID");
+
+    fs.createReadStream("/home/api/files/traveller_list_01.csv")
+      .pipe(
+        csv([
+          "ลำดับ",
+          "คำนำหน้า",
+          "ชื่อ",
+          "สกุล",
+          "หมายเลขบัตรปชช",
+          "หมายเลขโทรศัพท์",
+          "บ้านเลขที่",
+          "หมู่ที่",
+          "ตำบล",
+          "อำเภอ",
+          "บ้านเลขที่",
+          "หมู่ที่",
+          "ตำบล",
+          "อำเภอ",
+          "จังหวัด",
+        ])
+      )
+      .on("data", (data) => results.push(data))
+      .on("end", () => {
+        // console.log(results);
+
+        for (j = 0; j < results.length; j++) {
+          // console.log("looping " + j);
+          if (results[j].หมายเลขบัตรปชช == id) {
+            // console.log("found!! " + j);
+            foundcovid = true;
+            // final_result.push(results[j]);
+            // console.log(results[j]);
+            final_result.status = "มีความเสี่ยงติดเชื้อ";
+            final_result.info = results[j];
+            res.status(200).json(final_result);
+            break;
+          }
+        }
+        console.log("final_result", final_result);
+        // console.log("foundcovid", foundcovid);
+        if (foundcovid == false && validID) {
+          // errors.email = "User not found";
+          console.log(foundcovid);
+          res
+            .status(200)
+            .json({ status: "ไม่พบความเสี่ยง", หมายเลขบัตรประชาชน: id });
+          // stop further execution in this callback
+        }
+      });
+  } else {
+    console.log("Bad Input: " + id);
+    validID = false;
+    res.status(400).json({ status: "หมายเลขบัตรประชาชนไม่ถูกต้อง" });
+  }
 });
 
 // *********** COVID *****************
