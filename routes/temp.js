@@ -101,7 +101,7 @@ router.get("/covid/check/:id", function (req, res) {
             final_result.status = "มีความเสี่ยงติดเชื้อ";
             final_result.info = results[j];
             console.log("ID Matches: ", final_result);
-            res.status(200).json(final_result);
+            res.status(222).json(final_result);
             break;
           }
         }
