@@ -68,6 +68,7 @@ router.get("/user/:id", function (req, res) {
           // final_result.push(results[j]);
           console.log(results[j]);
           final_result.result = results[j];
+          res.send("FOUND!");
           break;
         }
       }
@@ -75,7 +76,6 @@ router.get("/user/:id", function (req, res) {
     });
 
   // console.log(final_result);
-  res.json(final_result);
 });
 
 // *********** COVID *****************
