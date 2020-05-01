@@ -115,7 +115,10 @@ router.get("/covid/check/:id", function (req, res) {
           console.log(foundcovid);
           res
             .status(200)
-            .json({ status: "ไม่พบความเสี่ยง", หมายเลขบัตรประชาชน: id });
+            .json({
+              status: "ไม่พบความเสี่ยง จาก จ.ภูเก็ต",
+              หมายเลขบัตรประชาชน: id,
+            });
           // stop further execution in this callback
         }
       });
