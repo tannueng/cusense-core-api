@@ -28,7 +28,7 @@ const pool = mysql.createPool({
 const fs = require("fs");
 const csv = require("csv-parser");
 
-router.get("/covid/user/:id", function (req, res) {
+router.get("/covid/check/:id", function (req, res) {
   let id = req.params.id;
 
   let final_result = {};
