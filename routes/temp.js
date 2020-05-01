@@ -45,7 +45,7 @@ router.get("/covid/check/:id", function (req, res) {
         "คำนำหน้า",
         "ชื่อ",
         "สกุล",
-        "id",
+        "หมายเลขบัตรปชช",
         "หมายเลขโทรศัพท์",
         "บ้านเลขที่",
         "หมู่ที่",
@@ -64,7 +64,7 @@ router.get("/covid/check/:id", function (req, res) {
       console.log("INPUT ID: " + id);
       for (j = 0; j < results.length; j++) {
         // console.log("looping " + j);
-        if (results[j].id == id) {
+        if (results[j].หมายเลขบัตรปชช == id) {
           console.log("found!! " + j);
           foundcovid = true;
           // final_result.push(results[j]);
