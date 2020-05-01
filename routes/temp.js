@@ -36,7 +36,7 @@ router.get("/covid/check/:id", function (req, res) {
   let foundcovid = false;
 
   if (!Number.isInteger(id) && id.length != 13) {
-    res.send(400).send("หมายเลขบัตรประชาชนไม่ถูกต้อง");
+    res.sendStatus(400).send("หมายเลขบัตรประชาชนไม่ถูกต้อง");
   }
   fs.createReadStream("/home/api/files/traveller_list_01.csv")
     .pipe(
