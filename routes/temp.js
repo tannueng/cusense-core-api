@@ -41,7 +41,7 @@ router.get("/user/:id", function (req, res) {
       console.log(results);
     });
 
-  res.send(results);
+  res.json(results);
 });
 
 // *********** COVID *****************
