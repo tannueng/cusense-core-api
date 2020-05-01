@@ -24,6 +24,10 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+router.get("/user/:id", function (req, res) {
+  res.send("user" + req.params.id);
+});
+
 defaultSQLquery =
   "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1";
 
