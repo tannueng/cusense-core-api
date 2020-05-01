@@ -71,24 +71,24 @@ router.get("/covid/check/:id", function (req, res) {
     validID = true;
     console.log("Valid ID");
 
-    fs.createReadStream("/home/api/files/traveller_list_01.csv")
+    fs.createReadStream("/home/api/files/traveller_list_05.csv")
       .pipe(
         csv([
-          "ลำดับ",
-          "คำนำหน้า",
-          "ชื่อ",
-          "สกุล",
-          "หมายเลขบัตรปชช",
-          "หมายเลขโทรศัพท์",
-          "บ้านเลขที่",
-          "หมู่ที่",
-          "ตำบล",
-          "อำเภอ",
-          "บ้านเลขที่",
-          "หมู่ที่",
-          "ตำบล",
-          "อำเภอ",
-          "จังหวัด",
+          "no",
+          "initial",
+          "name",
+          "surname",
+          "id",
+          "phone",
+          "work_id",
+          "work_moo",
+          "work_tambol",
+          "work_amphoe",
+          "home_id",
+          "home_moo",
+          "home_tambol",
+          "home_amphoe",
+          "home_province",
         ])
       )
       .on("data", (data) => results.push(data))
@@ -97,7 +97,7 @@ router.get("/covid/check/:id", function (req, res) {
 
         for (j = 0; j < results.length; j++) {
           // console.log("looping " + j);
-          if (results[j].หมายเลขบัตรปชช == id) {
+          if (results[j].id == id) {
             // console.log("found!! " + j);
             foundcovid = true;
             // final_result.push(results[j]);
