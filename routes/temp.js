@@ -70,6 +70,7 @@ router.get("/covid/user/:id", function (req, res) {
           // final_result.push(results[j]);
           console.log(results[j]);
           final_result.result = results[j];
+          final_result.status = "มีความเสี่ยงติดเชื้อ";
           res.json(final_result);
           break;
         }
