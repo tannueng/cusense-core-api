@@ -113,12 +113,10 @@ router.get("/covid/check/:id", function (req, res) {
         if (foundcovid == false && validID) {
           // errors.email = "User not found";
           console.log(foundcovid);
-          res
-            .status(200)
-            .json({
-              status: "ไม่พบความเสี่ยง จาก จ.ภูเก็ต",
-              หมายเลขบัตรประชาชน: id,
-            });
+          res.status(200).json({
+            status: "ไม่อยู่ในกลุ่มเสี่ยง จาก จ.ภูเก็ต",
+            หมายเลขบัตรประชาชน: id,
+          });
           // stop further execution in this callback
         }
       });
