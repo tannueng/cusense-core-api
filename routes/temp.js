@@ -85,7 +85,10 @@ router.get("/covid/check/:id", function (req, res) {
       console.log("foundcovid", foundcovid);
       if (foundcovid == false) {
         // errors.email = "User not found";
-        res.status(200).send("ไม่พบความเสี่ยง\nหมายเลขบัตรประชาชน " + id);
+        res
+          .status(200)
+          .send("ไม่พบความเสี่ยง\nหมายเลขบัตรประชาชน " + id)
+          .json({ status: "ไม่พบความเสี่ยง", หมายเลขบัตรประชาชน: id });
         // stop further execution in this callback
       }
     });
