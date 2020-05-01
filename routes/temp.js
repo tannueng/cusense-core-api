@@ -72,6 +72,7 @@ router.get("/covid/user/:id", function (req, res) {
           break;
         }
       }
+      console.log("final_result", final_result);
       if (!final_result) {
         errors.email = "User not found";
         res.status(404).json({ errors });
