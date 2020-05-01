@@ -1,12 +1,12 @@
 const express = require("express");
-// const https = require("https");
+const https = require("https");
 const fs = require("fs");
 const app = express();
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 var path = require("path");
 
-// const port = 3333;
+const port = 3333;
 
 //Import Routes
 const stationRoute = require("./routes/stations");
@@ -15,13 +15,13 @@ const queryRoute = require("./routes/query");
 const tempRoute = require("./routes/temp");
 // const covidRoute = require("./routes/covid");
 
-//HTTPS
-// var key = fs.readFileSync(__dirname + "/../certs/selfsigned.key");
-// var cert = fs.readFileSync(__dirname + "/../certs/selfsigned.crt");
-// var options = {
-//   key: key,
-//   cert: cert
-// };
+HTTPS;
+var key = fs.readFileSync("/etc/letsencrypt/live/cusense.net/privkey.pem");
+var cert = fs.readFileSync("/etc/letsencrypt/live/cusense.net/cert.pem");
+var options = {
+  key: key,
+  cert: cert,
+};
 
 dotenv.config();
 
@@ -111,13 +111,13 @@ app.use("/v1/manageStations", manageStationsRoute);
 app.use("/v1/sensorData", queryRoute);
 
 localhost: 3333;
-app.listen(3333, () => {
-  console.log("Server is up and listening on 3333...");
-});
-
-//HTTPS Server
-// var server = https.createServer(options, app);
-
-// server.listen(port, () => {
-//   console.log("server starting on port : " + port);
+// app.listen(3333, () => {
+//   console.log("Server is up and listening on 3333...");
 // });
+
+// HTTPS Server
+var server = https.createServer(options, app);
+
+server.listen(port, () => {
+  console.log("server starting on port : " + port);
+});
