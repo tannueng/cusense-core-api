@@ -29,19 +29,40 @@ const fs = require("fs");
 const csv = require("csv-parser");
 
 router.get("/user/:id", function (req, res) {
+  let id = req.params.id;
+
+  let final_res = {};
   let results = [];
   fs.createReadStream("/home/api/files/traveller_list_01.csv")
     .pipe(
-      csv({
-        headers: false,
-      })
+      // csv({
+      //   headers: false,
+      // })
+
+      csv([
+        "ลำดับ",
+        "คำนำหน้า",
+        "ชื่อ",
+        "สกุล",
+        "เลขบัตร ปชช.",
+        "หมายเลขโทรศัพท์",
+        "บ้านเลขที่",
+        "หมู่ที่",
+        "ตำบล",
+        "อำเภอ",
+        "บ้านเลขที่",
+        "หมู่ที่",
+        "ตำบล",
+        "อำเภอ",
+        "จังหวัด",
+      ])
     )
     .on("data", (data) => results.push(data))
     .on("end", () => {
       console.log(results);
     });
 
-  res.json(results);
+  res.json(final_res);
 });
 
 // *********** COVID *****************
