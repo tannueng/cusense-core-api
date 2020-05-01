@@ -15,7 +15,7 @@ const queryRoute = require("./routes/query");
 const tempRoute = require("./routes/temp");
 // const covidRoute = require("./routes/covid");
 
-HTTPS;
+// HTTPS
 var key = fs.readFileSync("/etc/letsencrypt/live/cusense.net/privkey.pem");
 var cert = fs.readFileSync("/etc/letsencrypt/live/cusense.net/cert.pem");
 var options = {
