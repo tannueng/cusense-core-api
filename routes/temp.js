@@ -28,7 +28,7 @@ const pool = mysql.createPool({
 const fs = require("fs");
 const csv = require("csv-parser");
 
-router.get("/user/:id", function (req, res) {
+router.get("/covid/user/:id", function (req, res) {
   let id = req.params.id;
 
   let final_result = {};
@@ -68,11 +68,11 @@ router.get("/user/:id", function (req, res) {
           // final_result.push(results[j]);
           console.log(results[j]);
           final_result.result = results[j];
-          res.send("FOUND!");
+          res.json(final_result);
           break;
         }
       }
-      res.send(id + " ไม่พบข้อมูลผู้มีความเสี่ยงติดเชื้อ");
+      res.send(" ไม่พบข้อมูลผู้มีความเสี่ยงติดเชื้อ");
     });
 
   // console.log(final_result);
