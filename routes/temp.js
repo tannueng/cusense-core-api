@@ -97,6 +97,7 @@ router.get("/covid/check/:id", function (req, res) {
       .on("end", () => {
         for (j = 0; j < results.length; j++) {
           if (results[j].id == id) {
+            // ***** Valid ID and IN Database *****
             foundcovid = true;
             final_result.status = "มีความเสี่ยงติดเชื้อ";
             final_result.info = results[j];
@@ -106,7 +107,7 @@ router.get("/covid/check/:id", function (req, res) {
           }
         }
 
-        // Valid ID but Not in Database
+        // ***** Valid ID but Not in Database *****
         if (foundcovid == false && validID) {
           console.log("ID Not Found");
           res.status(200).json({
@@ -116,7 +117,7 @@ router.get("/covid/check/:id", function (req, res) {
         }
       });
   } else {
-    //Invalid ID Input
+    //***** Invalid ID Input *****
     validID = false;
     res
       .status(400)

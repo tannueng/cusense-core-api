@@ -4,7 +4,7 @@ const fs = require("fs");
 const app = express();
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-var path = require("path");
+const path = require("path");
 
 const port = 3333;
 
@@ -13,15 +13,21 @@ const stationRoute = require("./routes/stations");
 const manageStationsRoute = require("./routes/manageStations");
 const queryRoute = require("./routes/query");
 const tempRoute = require("./routes/temp");
-// const covidRoute = require("./routes/covid");
 
-// HTTPS
-// var key = fs.readFileSync("/etc/letsencrypt/live/cusense.net/privkey.pem");
-// var cert = fs.readFileSync("/etc/letsencrypt/live/cusense.net/cert.pem");
-// var options = {
-//   key: key,
-//   cert: cert,
-// };
+dotenv.config();
+
+if (process.env.ENVVAR_AVAIL != "available") {
+  console.log(
+    "Environment Variable is not found!\nMay have trouble connecting with MySQL and InfluxDB."
+  );
+  console.log("");
+  console.log("*************************");
+  console.log("       TERMINATING       ");
+  console.log("*************************");
+  process.exit(1);
+} else {
+  console.log("Found environment variables. Connected to DB.");
+}
 
 // Certificate
 const privateKey = fs.readFileSync(
@@ -42,21 +48,6 @@ const credentials = {
   cert: certificate,
   ca: ca,
 };
-
-dotenv.config();
-
-if (process.env.ENVVAR_AVAIL != "available") {
-  console.log(
-    "Environment Variable is not found!\nMay have trouble connecting with mySQL and InfluxDB."
-  );
-  console.log("");
-  console.log("*************************");
-  console.log("       TERMINATING       ");
-  console.log("*************************");
-  process.exit(1);
-} else {
-  console.log("Found environment variables.");
-}
 
 accessLogStream = fs.createWriteStream(path.join(__dirname, "old_access.log"), {
   flags: "a",
@@ -123,14 +114,12 @@ app.use(
 // app.use("/api/v1/sensorData", cors(config), queryRoute);
 // app.use("/api/v1/users", authRoute);
 app.use("/api/", tempRoute);
-// app.use("/covid/", covidRoute);
 
 //New Route Middleware
 app.use("/v1/stationInfo", stationRoute);
 app.use("/v1/manageStations", manageStationsRoute);
 app.use("/v1/sensorData", queryRoute);
 
-localhost: 3333;
 // app.listen(3333, () => {
 //   console.log("Server is up and listening on 3333...");
 // });
@@ -139,5 +128,5 @@ localhost: 3333;
 var server = https.createServer(credentials, app);
 
 server.listen(port, () => {
-  console.log("server starting on port : " + port);
+  console.log("Server is up and listening on " + port + "...");
 });
