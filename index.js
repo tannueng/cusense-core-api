@@ -16,11 +16,31 @@ const tempRoute = require("./routes/temp");
 // const covidRoute = require("./routes/covid");
 
 // HTTPS
-var key = fs.readFileSync("/etc/letsencrypt/live/cusense.net/privkey.pem");
-var cert = fs.readFileSync("/etc/letsencrypt/live/cusense.net/cert.pem");
-var options = {
-  key: key,
-  cert: cert,
+// var key = fs.readFileSync("/etc/letsencrypt/live/cusense.net/privkey.pem");
+// var cert = fs.readFileSync("/etc/letsencrypt/live/cusense.net/cert.pem");
+// var options = {
+//   key: key,
+//   cert: cert,
+// };
+
+// Certificate
+const privateKey = fs.readFileSync(
+  "/etc/letsencrypt/live/cusense.net/privkey.pem",
+  "utf8"
+);
+const certificate = fs.readFileSync(
+  "/etc/letsencrypt/live/cusense.net/cert.pem",
+  "utf8"
+);
+const ca = fs.readFileSync(
+  "/etc/letsencrypt/live/cusense.net/chain.pem",
+  "utf8"
+);
+
+const credentials = {
+  key: privateKey,
+  cert: certificate,
+  ca: ca,
 };
 
 dotenv.config();
@@ -116,7 +136,7 @@ localhost: 3333;
 // });
 
 // HTTPS Server
-var server = https.createServer(options, app);
+var server = https.createServer(credentials, app);
 
 server.listen(port, () => {
   console.log("server starting on port : " + port);
