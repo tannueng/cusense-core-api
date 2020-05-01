@@ -24,10 +24,28 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+//**************COVID************ */
+const fs = require("fs");
+const csv = require("csv-parser");
+
+let results = [];
+
 router.get("/user/:id", function (req, res) {
-  res.send("user" + req.params.id);
+  fs.createReadStream("/home/api/files/traveller_list_01.csv")
+    .pipe(
+      csv({
+        headers: false,
+      })
+    )
+    .on("data", (data) => results.push(data))
+    .on("end", () => {
+      console.log(results);
+    });
+
+  res.send("user\n" + results);
 });
 
+// *********** COVID *****************
 defaultSQLquery =
   "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1";
 
