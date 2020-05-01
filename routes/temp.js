@@ -33,6 +33,7 @@ router.get("/covid/user/:id", function (req, res) {
 
   let final_result = {};
   let results = [];
+  let foundcovid = false;
   fs.createReadStream("/home/api/files/traveller_list_01.csv")
     .pipe(
       // csv({
@@ -65,6 +66,7 @@ router.get("/covid/user/:id", function (req, res) {
         console.log("looping " + j);
         if (results[j].id == id) {
           console.log("found!! " + j);
+          foundcovid = true;
           // final_result.push(results[j]);
           console.log(results[j]);
           final_result.result = results[j];
@@ -73,11 +75,11 @@ router.get("/covid/user/:id", function (req, res) {
         }
       }
       console.log("final_result", final_result);
-      if (final_result == {}) {
-        errors.email = "User not found";
-        res.status(404).json({ errors });
+      console.log("foundcovid", foundcovid);
+      if (foundcovid == false) {
+        // errors.email = "User not found";
+        res.status(200).send("ไม่พบ");
         // stop further execution in this callback
-        return;
       }
     });
 
