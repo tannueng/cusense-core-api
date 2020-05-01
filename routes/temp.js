@@ -63,14 +63,14 @@ router.get("/covid/user/:id", function (req, res) {
       // console.log(results);
       console.log("INPUT ID: " + id);
       for (j = 0; j < results.length; j++) {
-        console.log("looping " + j);
+        // console.log("looping " + j);
         if (results[j].id == id) {
           console.log("found!! " + j);
           foundcovid = true;
           // final_result.push(results[j]);
           console.log(results[j]);
           final_result.status = "มีความเสี่ยงติดเชื้อ";
-          final_result.result = results[j];
+          final_result.info = results[j];
           res.status(201).json(final_result);
           break;
         }
