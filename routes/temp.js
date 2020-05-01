@@ -122,7 +122,9 @@ router.get("/covid/check/:id", function (req, res) {
   } else {
     console.log("Bad Input: " + id);
     validID = false;
-    res.status(400).json({ status: "หมายเลขบัตรประชาชนไม่ถูกต้อง" });
+    res
+      .status(400)
+      .json({ status: "หมายเลขบัตรประชาชนไม่ถูกต้อง", หมายเลขบัตรประชาชน: id });
   }
 });
 
