@@ -72,7 +72,12 @@ router.get("/covid/user/:id", function (req, res) {
           break;
         }
       }
-      res.send(" ไม่พบข้อมูลผู้มีความเสี่ยงติดเชื้อ");
+      if (!final_result) {
+        errors.email = "User not found";
+        res.status(404).json({ errors });
+        // stop further execution in this callback
+        return;
+      }
     });
 
   // console.log(final_result);
