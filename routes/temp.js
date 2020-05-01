@@ -66,9 +66,11 @@ router.get("/user/:id", function (req, res) {
         if (results[j].id == id) {
           // final_result.push(results[j]);
           console.log(results[j]);
-          final_result.push(results[j]);
+          final_result.results[j];
+          break;
         }
       }
+      res.send(id + " ไม่พบข้อมูลผู้มีความเสี่ยงติดเชื้อ");
     });
 
   // console.log(final_result);
