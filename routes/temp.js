@@ -59,15 +59,15 @@ router.get("/user/:id", function (req, res) {
     )
     .on("data", (data) => results.push(data))
     .on("end", () => {
-      console.log(results);
+      // console.log(results);
     });
 
   for (j = 0; j < results.length; j++) {
-    if (rows[j].id == id) {
-      final_result[rows[j].id].data.push(results[j]);
-    }
+    // if (rows[j].id == id) {
+    final_result[rows[j].id].data.push(results[j]);
+    // }
   }
-
+  console.log(final_result);
   res.json(final_result);
 });
 
