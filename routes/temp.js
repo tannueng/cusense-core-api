@@ -1,11 +1,5 @@
 const router = require("express").Router();
 const Influx = require("influx");
-const verify = require("./verifyToken");
-const {
-  directQueryValidation,
-  dateValidation,
-  monthValidation
-} = require("../validation");
 const mysql = require("mysql2");
 const dotenv = require("dotenv");
 
@@ -17,7 +11,7 @@ const influx = new Influx.InfluxDB({
   database: process.env.INFLUX_DB,
   // username: "username",
   // password: "password",
-  port: 8086
+  port: 8086,
 });
 
 const pool = mysql.createPool({
@@ -27,9 +21,110 @@ const pool = mysql.createPool({
   database: process.env.SQL_DB,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
 });
 
+//**************COVID************ */
+const fs = require("fs");
+const csv = require("csv-parser");
+
+function chkDigitPid(p_iPID) {
+  var total = 0;
+  var iPID;
+  var chk;
+  var Validchk;
+  iPID = p_iPID.replace(/-/g, "");
+  Validchk = iPID.substr(12, 1);
+  var j = 0;
+  var pidcut;
+  for (var n = 0; n < 12; n++) {
+    pidcut = parseInt(iPID.substr(j, 1));
+    total = total + pidcut * (13 - n);
+    j++;
+  }
+
+  chk = 11 - (total % 11);
+
+  if (chk == 10) {
+    chk = 0;
+  } else if (chk == 11) {
+    chk = 1;
+  }
+  if (chk == Validchk) {
+    // alert("ระบุหมายเลขประจำตัวประชาชนถูกต้อง");
+    return true;
+  } else {
+    // alert("ระบุหมายเลขประจำตัวประชาชนไม่ถูกต้อง");
+    return false;
+  }
+}
+
+router.get("/covid/check/:id", function (req, res) {
+  let id = req.params.id;
+
+  let final_result = {};
+  let results = [];
+  let foundcovid = false;
+  let validID = true;
+
+  console.log("INPUT ID: " + id);
+
+  if (chkDigitPid(id)) {
+    validID = true;
+    // console.log("Valid ID");
+
+    fs.createReadStream("/home/api/files/traveller_list_05.csv")
+      .pipe(
+        csv([
+          "no",
+          "initial",
+          "name",
+          "surname",
+          "id",
+          "phone",
+          "work_id",
+          "work_moo",
+          "work_tambol",
+          "work_amphoe",
+          "home_id",
+          "home_moo",
+          "home_tambol",
+          "home_amphoe",
+          "home_province",
+        ])
+      )
+      .on("data", (data) => results.push(data))
+      .on("end", () => {
+        for (j = 0; j < results.length; j++) {
+          if (results[j].id == id) {
+            foundcovid = true;
+            final_result.status = "มีความเสี่ยงติดเชื้อ";
+            final_result.info = results[j];
+            console.log("ID Matches: ", final_result);
+            res.status(222).json(final_result);
+            break;
+          }
+        }
+
+        // Valid ID but Not in Database
+        if (foundcovid == false && validID) {
+          console.log("ID Not Found");
+          res.status(200).json({
+            status: "ไม่อยู่ในกลุ่มเสี่ยง จาก จ.ภูเก็ต",
+            หมายเลขบัตรประชาชน: id,
+          });
+        }
+      });
+  } else {
+    //Invalid ID Input
+    validID = false;
+    res
+      .status(400)
+      .json({ status: "หมายเลขบัตรประชาชนไม่ถูกต้อง", หมายเลขบัตรประชาชน: id });
+  }
+});
+
+// *********** COVID *****************
 defaultSQLquery =
   "SELECT topic,project,id,lat,lon,name,tambol,amphoe,province FROM station WHERE publish = 1";
 
@@ -52,10 +147,10 @@ router.get("/getcudata", (req, res) => {
 });
 
 function matchQuery(mysqlQuery, influxQuery, distinct, res) {
-  pool.query(mysqlQuery, function(err, rows, fields) {
+  pool.query(mysqlQuery, function (err, rows, fields) {
     influx
       .query(influxQuery)
-      .then(results => {
+      .then((results) => {
         let final_result = {};
         let firstTime = true;
         // console.log(rows);
@@ -87,10 +182,10 @@ function matchQuery(mysqlQuery, influxQuery, distinct, res) {
 }
 
 function matchMultipleQuery(mysqlQuery, influxQuery, distinct, res) {
-  pool.query(mysqlQuery, function(err, rows, fields) {
+  pool.query(mysqlQuery, function (err, rows, fields) {
     influx
       .query(influxQuery)
-      .then(results => {
+      .then((results) => {
         let final_result = {};
         let firstTime = true;
         // console.log(rows);
