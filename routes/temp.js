@@ -63,7 +63,7 @@ router.get("/user/:id", function (req, res) {
       for (j = 0; j < results.length; j++) {
         console.log("looping " + j);
         // if (rows[j].id == id) {
-        final_result[rows[j].id].data.push(results[j]);
+        final_result.push(results[j]);
         // }
       }
     });
