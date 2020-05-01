@@ -69,9 +69,9 @@ router.get("/covid/user/:id", function (req, res) {
           foundcovid = true;
           // final_result.push(results[j]);
           console.log(results[j]);
-          final_result.result = results[j];
           final_result.status = "มีความเสี่ยงติดเชื้อ";
-          res.json(final_result);
+          final_result.result = results[j];
+          res.status(201).json(final_result);
           break;
         }
       }
@@ -79,7 +79,7 @@ router.get("/covid/user/:id", function (req, res) {
       console.log("foundcovid", foundcovid);
       if (foundcovid == false) {
         // errors.email = "User not found";
-        res.status(200).send("ไม่พบ");
+        res.status(200).send("ไม่พบความเสี่ยง\nหมายเลขบัตรประชาชน " + id);
         // stop further execution in this callback
       }
     });
