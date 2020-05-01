@@ -59,11 +59,12 @@ router.get("/user/:id", function (req, res) {
     )
     .on("data", (data) => results.push(data))
     .on("end", () => {
-      console.log(results);
+      // console.log(results);
       for (j = 0; j < results.length; j++) {
         console.log("looping " + j);
         // if (rows[j].id == id) {
-        final_result.push(results[j]);
+        // final_result.push(results[j]);
+        console.log(results[j]);
         // }
       }
     });
