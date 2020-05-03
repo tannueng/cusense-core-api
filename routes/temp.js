@@ -118,6 +118,53 @@ router.get("/covid/check/:id", function (req, res) {
           });
         }
       });
+  } else if (id.length == 7 && Number.isInteger(id)) {
+    validID = true;
+    fs.createReadStream("/home/api/files/traveller_list_06u.csv")
+      .pipe(
+        csv([
+          "no",
+          "initial",
+          "name",
+          "surname",
+          "id",
+          "phone",
+          "work_id",
+          "work_moo",
+          "work_tambol",
+          "work_amphoe",
+          "home_id",
+          "home_moo",
+          "home_tambol",
+          "home_amphoe",
+          "home_province",
+          "vehicle",
+          "veh_id",
+        ])
+      )
+      .on("data", (data) => results.push(data))
+      .on("end", () => {
+        for (j = 0; j < results.length; j++) {
+          if (results[j].id == id) {
+            // ***** Valid ID and IN Database *****
+            foundcovid = true;
+            final_result.status = "เป็นผู้เดินทางจาก จ.ภูเก็ต";
+            final_result.info = results[j];
+            console.log("ID Matches: ", final_result);
+            res.status(222).json(final_result);
+            break;
+          }
+        }
+
+        // ***** Valid ID but Not in Database *****
+        if (foundcovid == false && validID) {
+          console.log("ID Not Found");
+          res.status(200).json({
+            status: "ไม่อยู่ในกลุ่มเสี่ยงที่เดินทางจาก จ.ภูเก็ต",
+            หมายเลขบัตรประชาชน: id,
+          });
+        }
+      });
   } else {
     //***** Invalid ID Input *****
     validID = false;
