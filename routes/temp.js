@@ -69,11 +69,13 @@ router.get("/covid/check/:id", function (req, res) {
 
   console.log("INPUT ID: " + id);
 
+  const filedir = "/home/api/files/traveller_list_06u.csv";
+
   if (chkDigitPid(id)) {
     validID = true;
     // console.log("Valid ID");
 
-    fs.createReadStream("/home/api/files/traveller_list_06u.csv")
+    fs.createReadStream(filedir)
       .pipe(
         csv([
           "no",
@@ -118,9 +120,11 @@ router.get("/covid/check/:id", function (req, res) {
           });
         }
       });
-  } else if (id.toString().length == 7 && Number.isInteger(id)) {
+  } else if (true) {
+    // id.toString().length == 7 && Number.isInteger(id)
+    console.log("Valid Passport: " + id);
     validID = true;
-    fs.createReadStream("/home/api/files/traveller_list_06u.csv")
+    fs.createReadStream(filedir)
       .pipe(
         csv([
           "no",
