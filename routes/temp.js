@@ -73,7 +73,7 @@ router.get("/covid/check/:id", function (req, res) {
     validID = true;
     // console.log("Valid ID");
 
-    fs.createReadStream("/home/api/files/traveller_list_05.csv")
+    fs.createReadStream("/home/api/files/traveller_list_06u.csv")
       .pipe(
         csv([
           "no",
@@ -91,6 +91,8 @@ router.get("/covid/check/:id", function (req, res) {
           "home_tambol",
           "home_amphoe",
           "home_province",
+          "vehicle",
+          "veh_id",
         ])
       )
       .on("data", (data) => results.push(data))
