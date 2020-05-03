@@ -120,8 +120,7 @@ router.get("/covid/check/:id", function (req, res) {
           });
         }
       });
-  } else if (true) {
-    // id.toString().length == 7 && Number.isInteger(id)
+  } else if (id.toString().length == 7 && Number.isInteger(id)) {
     console.log("Valid Passport: " + id);
     validID = true;
     fs.createReadStream(filedir)
