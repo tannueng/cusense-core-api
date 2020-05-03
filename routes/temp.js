@@ -122,7 +122,7 @@ router.get("/covid/check/:id", function (req, res) {
       });
   } else {
     if (id.toString().length == 7) {
-      console.log("Valid Passport: " + id);
+      console.log("Valid? Passport: " + id);
       validID = true;
       fs.createReadStream(filedir)
         .pipe(
@@ -164,7 +164,8 @@ router.get("/covid/check/:id", function (req, res) {
           if (foundcovid == false && validID) {
             console.log("ID Not Found");
             res.status(200).json({
-              status: "ไม่อยู่ในกลุ่มเสี่ยงที่เดินทางจาก จ.ภูเก็ต",
+              status:
+                "ไม่อยู่ในกลุ่มเสี่ยงที่เดินทางจาก จ.ภูเก็ต หรือ หมายเลขไม่ถูกต้อง",
               หมายเลขบัตรประชาชน: id,
             });
           }
