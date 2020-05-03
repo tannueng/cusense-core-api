@@ -118,7 +118,7 @@ router.get("/covid/check/:id", function (req, res) {
           });
         }
       });
-  } else if (id.length == 7 && Number.isInteger(id)) {
+  } else if (id.toString().length == 7 && Number.isInteger(id)) {
     validID = true;
     fs.createReadStream("/home/api/files/traveller_list_06u.csv")
       .pipe(
