@@ -69,11 +69,13 @@ router.get("/covid/check/:id", function (req, res) {
 
   console.log("INPUT ID: " + id);
 
+  const filedir = "/home/api/files/traveller_list_06u.csv";
+
   if (chkDigitPid(id)) {
     validID = true;
     // console.log("Valid ID");
 
-    fs.createReadStream("/home/api/files/traveller_list_05.csv")
+    fs.createReadStream(filedir)
       .pipe(
         csv([
           "no",
@@ -91,14 +93,17 @@ router.get("/covid/check/:id", function (req, res) {
           "home_tambol",
           "home_amphoe",
           "home_province",
+          "vehicle",
+          "veh_id",
         ])
       )
       .on("data", (data) => results.push(data))
       .on("end", () => {
         for (j = 0; j < results.length; j++) {
           if (results[j].id == id) {
+            // ***** Valid ID and IN Database *****
             foundcovid = true;
-            final_result.status = "มีความเสี่ยงติดเชื้อ";
+            final_result.status = "เป็นผู้เดินทางจาก จ.ภูเก็ต";
             final_result.info = results[j];
             console.log("ID Matches: ", final_result);
             res.status(222).json(final_result);
@@ -106,21 +111,73 @@ router.get("/covid/check/:id", function (req, res) {
           }
         }
 
-        // Valid ID but Not in Database
+        // ***** Valid ID but Not in Database *****
         if (foundcovid == false && validID) {
           console.log("ID Not Found");
           res.status(200).json({
-            status: "ไม่อยู่ในกลุ่มเสี่ยง จาก จ.ภูเก็ต",
+            status: "ไม่อยู่ในกลุ่มเสี่ยงที่เดินทางจาก จ.ภูเก็ต",
             หมายเลขบัตรประชาชน: id,
           });
         }
       });
   } else {
-    //Invalid ID Input
-    validID = false;
-    res
-      .status(400)
-      .json({ status: "หมายเลขบัตรประชาชนไม่ถูกต้อง", หมายเลขบัตรประชาชน: id });
+    if (id.toString().length == 7) {
+      console.log("Valid? Passport: " + id);
+      validID = true;
+      fs.createReadStream(filedir)
+        .pipe(
+          csv([
+            "no",
+            "initial",
+            "name",
+            "surname",
+            "id",
+            "phone",
+            "work_id",
+            "work_moo",
+            "work_tambol",
+            "work_amphoe",
+            "home_id",
+            "home_moo",
+            "home_tambol",
+            "home_amphoe",
+            "home_province",
+            "vehicle",
+            "veh_id",
+          ])
+        )
+        .on("data", (data) => results.push(data))
+        .on("end", () => {
+          for (j = 0; j < results.length; j++) {
+            if (results[j].id == id) {
+              // ***** Valid ID and IN Database *****
+              foundcovid = true;
+              final_result.status = "เป็นผู้เดินทางจาก จ.ภูเก็ต";
+              final_result.info = results[j];
+              console.log("ID Matches: ", final_result);
+              res.status(222).json(final_result);
+              break;
+            }
+          }
+
+          // ***** Valid ID but Not in Database *****
+          if (foundcovid == false && validID) {
+            console.log("ID Not Found");
+            res.status(200).json({
+              status:
+                "ไม่อยู่ในกลุ่มเสี่ยงที่เดินทางจาก จ.ภูเก็ต หรือ หมายเลขไม่ถูกต้อง",
+              หมายเลขบัตรประชาชน: id,
+            });
+          }
+        });
+    } else {
+      //***** Invalid ID Input *****
+      validID = false;
+      res.status(400).json({
+        status: "หมายเลขบัตรประชาชนไม่ถูกต้อง",
+        หมายเลขบัตรประชาชน: id,
+      });
+    }
   }
 });
 
