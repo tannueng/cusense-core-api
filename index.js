@@ -29,7 +29,7 @@ if (process.env.ENVVAR_AVAIL != "available") {
   console.log("Found environment variables. Connected to DB.");
 }
 
-Certificate
+// Certificate
 const privateKey = fs.readFileSync(
   "/etc/letsencrypt/live/cusense.net/privkey.pem",
   "utf8"
