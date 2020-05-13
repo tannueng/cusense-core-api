@@ -30,24 +30,24 @@ if (process.env.ENVVAR_AVAIL != "available") {
 }
 
 // Certificate
-const privateKey = fs.readFileSync(
-  "/etc/letsencrypt/live/cusense.net/privkey.pem",
-  "utf8"
-);
-const certificate = fs.readFileSync(
-  "/etc/letsencrypt/live/cusense.net/cert.pem",
-  "utf8"
-);
-const ca = fs.readFileSync(
-  "/etc/letsencrypt/live/cusense.net/chain.pem",
-  "utf8"
-);
+// const privateKey = fs.readFileSync(
+//   "/etc/letsencrypt/live/cusense.net/privkey.pem",
+//   "utf8"
+// );
+// const certificate = fs.readFileSync(
+//   "/etc/letsencrypt/live/cusense.net/cert.pem",
+//   "utf8"
+// );
+// const ca = fs.readFileSync(
+//   "/etc/letsencrypt/live/cusense.net/chain.pem",
+//   "utf8"
+// );
 
-const credentials = {
-  key: privateKey,
-  cert: certificate,
-  ca: ca,
-};
+// const credentials = {
+//   key: privateKey,
+//   cert: certificate,
+//   ca: ca,
+// };
 
 accessLogStream = fs.createWriteStream(path.join(__dirname, "old_access.log"), {
   flags: "a",
@@ -120,13 +120,14 @@ app.use("/v1/stationInfo", stationRoute);
 app.use("/v1/manageStations", manageStationsRoute);
 app.use("/v1/sensorData", queryRoute);
 
-// app.listen(3333, () => {
-//   console.log("Server is up and listening on 3333...");
-// });
+// HTTP Server
+app.listen(3333, () => {
+  console.log("Server is up and listening on 3333...");
+});
 
 // HTTPS Server
-var server = https.createServer(credentials, app);
+// var server = https.createServer(credentials, app);
 
-server.listen(port, () => {
-  console.log("Server is up and listening on " + port + "...");
-});
+// server.listen(port, () => {
+//   console.log("Server is up and listening on " + port + "...");
+// });
