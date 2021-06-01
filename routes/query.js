@@ -323,6 +323,39 @@ router.post("/byStation/:timeframe/:date", (req, res) => {
   }
 });
 
+//Get 24hrs summary of all station of a date
+router.get("/allStation/daily/:date", (req, res) => {
+  const date = req.params.date;
+
+  const { error } = dateValidation(date);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    matchQuery(
+      defaultSQLquery,
+      "select " +
+        mean_all +
+        " from airdata where time >= '" +
+        date +
+        "' and time <= '" +
+        date +
+        "' + 1d - 1s group by topic order by time asc limit 24 tz('Asia/Bangkok')",
+      res
+    );
+
+    // matchQuery(
+    //   byStationSQLQuery(topic),
+    //   "select " +
+    //     mean_all +
+    //     " from airdata where time >= '" +
+    //     date +
+    //     "' and time <= '" +
+    //     date +
+    //     "' + 1d - 1s group by topic order by time asc limit 24 tz('Asia/Bangkok')",
+    //   res
+    // );
+
+})
+
 //********************* MATCH SQL AND INFLUX QUERY ************************* */
 
 function matchQuery(mysqlQuery, influxQuery, res) {
